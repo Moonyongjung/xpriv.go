@@ -5,6 +5,7 @@ import (
 	mauth "github.com/Moonyongjung/xpla-private-chain.go/core/auth"
 	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
 	mbase "github.com/Moonyongjung/xpla-private-chain.go/core/base"
+	mdid "github.com/Moonyongjung/xpla-private-chain.go/core/did"
 	mdist "github.com/Moonyongjung/xpla-private-chain.go/core/distribution"
 	mevidence "github.com/Moonyongjung/xpla-private-chain.go/core/evidence"
 	mevm "github.com/Moonyongjung/xpla-private-chain.go/core/evm"
@@ -51,6 +52,9 @@ func (xplac *XplaClient) Query() (string, error) {
 
 	} else if xplac.Module == mbase.Base {
 		return ixplaClient.QueryBase()
+
+	} else if xplac.Module == mdid.DidModule {
+		return ixplaClient.QueryDID()
 
 	} else if xplac.Module == mdist.DistributionModule {
 		return ixplaClient.QueryDistribution()

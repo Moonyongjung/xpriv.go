@@ -4,11 +4,11 @@ const (
 	// New mnemonic entropy size
 	DefaultEntropySize = 256
 	// Xpla base denomination
-	XplaDenom = "axpla"
+	XplaDenom = "axpriv"
 	// Xpla default key algorithm name
 	DefaultXplaKeyAlgo = "eth_secp256k1"
 	// Xpla tool default name
-	XplaToolDefaultName = "xpla"
+	XplaToolDefaultName = "xpriv"
 
 	// query method type
 	QueryGrpc = 1

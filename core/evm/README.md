@@ -116,7 +116,7 @@ res, err := xplac.GetBlockByHashOrHeight(getBlockByHashHeightMsg).Query()
 //   - "pending_code" : the contract code of the given account in the pending state (eth_getCode of the pending state)
 //   - "pending_transaction_count" : the total number of transactions in the pending state (eth_getBlockTransactionCountByNumber of the pending state)
 
-// so, the xpla.go would not support some RPC APIs as "eth_getBalance", "eth_getTransactionCount", "eth_getStorageAt" and "eth_getCode" because the function is AccountInfo includes these.
+// so, the xpla-private-chain.go would not support some RPC APIs as "eth_getBalance", "eth_getTransactionCount", "eth_getStorageAt" and "eth_getCode" because the function is AccountInfo includes these.
 
 accountInfoMsg := types.AccountInfoMsg{
     Account: "0xCa8582862B82867C4Bb9E926682dD75820dE6013",

@@ -2,6 +2,7 @@ package distribution
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/Moonyongjung/xpla-private-chain.go/core"
 	"github.com/Moonyongjung/xpla-private-chain.go/key"
@@ -107,20 +108,39 @@ func parseWithdrawRewardsArgs(withdrawRewardsMsg types.WithdrawRewardsMsg, privK
 }
 
 // Parsing - withdraw all rewards
-func parseWithdrawAllRewardsArgs(privKey key.PrivateKey, grpcConn grpc.ClientConn, ctx context.Context) ([]sdk.Msg, error) {
+func parseWithdrawAllRewardsArgs(privKey key.PrivateKey, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context) ([]sdk.Msg, error) {
 	delAddr, err := util.GetAddrByPrivKey(privKey)
 	if err != nil {
 		return nil, util.LogErr(errors.ErrParse, err)
 	}
-	queryClient := disttypes.NewQueryClient(grpcConn)
-	delValsRes, err := queryClient.DelegatorValidators(
-		ctx,
-		&disttypes.QueryDelegatorValidatorsRequest{
-			DelegatorAddress: delAddr.String(),
-		},
-	)
-	if err != nil {
-		return nil, util.LogErr(errors.ErrGrpcRequest, err)
+
+	var delValsRes *disttypes.QueryDelegatorValidatorsResponse
+	if grpcUrl != "" {
+		queryClient := disttypes.NewQueryClient(grpcConn)
+		delValsRes, err = queryClient.DelegatorValidators(
+			ctx,
+			&disttypes.QueryDelegatorValidatorsRequest{
+				DelegatorAddress: delAddr.String(),
+			},
+		)
+		if err != nil {
+			return nil, util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
+	} else {
+		url := lcdUrl + "/cosmos/distribution/v1beta1/delegators/" + delAddr.String() + "/validators"
+
+		out, err := util.CtxHttpClient("GET", url, nil, ctx)
+		if err != nil {
+			return nil, util.LogErr(errors.ErrHttpRequest, err)
+		}
+
+		err = delValsRes.Unmarshal(out)
+		if err != nil {
+			return nil, util.LogErr(errors.ErrHttpRequest, err)
+		}
+
+		json.Unmarshal(out, delValsRes)
 	}
 
 	vals := delValsRes.Validators

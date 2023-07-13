@@ -4,6 +4,7 @@ import (
 	mauth "github.com/Moonyongjung/xpla-private-chain.go/core/auth"
 	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
 	mbase "github.com/Moonyongjung/xpla-private-chain.go/core/base"
+	mdid "github.com/Moonyongjung/xpla-private-chain.go/core/did"
 	mdist "github.com/Moonyongjung/xpla-private-chain.go/core/distribution"
 	mevidence "github.com/Moonyongjung/xpla-private-chain.go/core/evidence"
 	mevm "github.com/Moonyongjung/xpla-private-chain.go/core/evm"
@@ -243,6 +244,21 @@ func (xplac *XplaClient) ValidatorSet(validatorSetMsg ...types.ValidatorSetMsg) 
 	} else {
 		xplac.Err = util.LogErr(errors.ErrInvalidRequest, "need only one parameter")
 	}
+	return xplac
+}
+
+// DID module
+
+// Query DID info.
+func (xplac *XplaClient) GetDID(getDIDMsg types.GetDIDMsg) *XplaClient {
+	msg, err := mdid.MakeGetDIDMsg(getDIDMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidGetDidMsgType
+	xplac.Msg = msg
 	return xplac
 }
 

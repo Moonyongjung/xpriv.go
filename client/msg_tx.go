@@ -3,6 +3,7 @@ package client
 import (
 	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
 	mcrisis "github.com/Moonyongjung/xpla-private-chain.go/core/crisis"
+	mdid "github.com/Moonyongjung/xpla-private-chain.go/core/did"
 	mdist "github.com/Moonyongjung/xpla-private-chain.go/core/distribution"
 	mevm "github.com/Moonyongjung/xpla-private-chain.go/core/evm"
 	mfeegrant "github.com/Moonyongjung/xpla-private-chain.go/core/feegrant"
@@ -40,6 +41,44 @@ func (xplac *XplaClient) InvariantBroken(invariantBrokenMsg types.InvariantBroke
 	}
 	xplac.Module = mcrisis.CrisisModule
 	xplac.MsgType = mcrisis.CrisisInvariantBrokenMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// DID module
+
+// Create new DID.
+func (xplac *XplaClient) CreateDID(createDIDMsg types.CreateDIDMsg) *XplaClient {
+	msg, err := mdid.MakeCreateDIDMsg(createDIDMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidCreateDidMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Update existed DID.
+func (xplac *XplaClient) UpdateDID(updateDIDMsg types.UpdateDIDMsg) *XplaClient {
+	msg, err := mdid.MakeUpdateDIDMsg(updateDIDMsg, xplac.GetLcdURL(), xplac.GetGrpcUrl(), xplac.GetGrpcClient(), xplac.Opts.PrivateKey, xplac.GetContext())
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidUpdateDidMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Deactivate existed DID.
+func (xplac *XplaClient) DeactivateDID(deactivateDIDMsg types.DeactivateDIDMsg) *XplaClient {
+	msg, err := mdid.MakeDeactivateDIDMsg(deactivateDIDMsg, xplac.GetLcdURL(), xplac.GetGrpcUrl(), xplac.GetGrpcClient(), xplac.Opts.PrivateKey, xplac.GetContext())
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidDeactivateDidMsgType
 	xplac.Msg = msg
 	return xplac
 }
@@ -84,7 +123,7 @@ func (xplac *XplaClient) WithdrawRewards(withdrawRewardsMsg types.WithdrawReward
 
 // Withdraw all delegations rewards for a delegator.
 func (xplac *XplaClient) WithdrawAllRewards() *XplaClient {
-	msg, err := mdist.MakeWithdrawAllRewardsMsg(xplac.Opts.PrivateKey, xplac.Grpc, xplac.Context)
+	msg, err := mdist.MakeWithdrawAllRewardsMsg(xplac.Opts.PrivateKey, xplac.Opts.LcdURL, xplac.Opts.GrpcURL, xplac.Grpc, xplac.Context)
 	if err != nil {
 		xplac.Err = err
 	}

@@ -13,7 +13,10 @@ import (
 	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
 	"github.com/Moonyongjung/xpla-private-chain.go/util"
 	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -29,6 +32,27 @@ var (
 	pubKeys, _ = CreateTestPubKeys(5)
 	valConsPk1 = pubKeys[0]
 )
+
+type TestSuite struct {
+	suite.Suite
+
+	ctx         sdk.Context
+	app         *xapp.XplaApp
+	queryClient disttypes.QueryClient
+}
+
+func (suite *TestSuite) SetupTest() {
+	checkTx := false
+	app := testutil.Setup(checkTx, 5)
+	ctx := app.BaseApp.NewContext(checkTx, tmproto.Header{})
+
+	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
+	disttypes.RegisterQueryServer(queryHelper, app.DistrKeeper)
+
+	suite.app = app
+	suite.ctx = ctx
+	suite.queryClient = disttypes.NewQueryClient(queryHelper)
+}
 
 func (suite *TestSuite) TestGRPCParams() {
 	app, ctx, queryClient := suite.app, suite.ctx, suite.queryClient

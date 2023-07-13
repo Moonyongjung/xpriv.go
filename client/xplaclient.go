@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// The xpla client is a client for performing all functions within the xpla.go library.
+// The xpla client is a client for performing all functions within the xpla-private-chain.go library.
 // The user mandatorily inputs chain ID.
 type XplaClient struct {
 	ChainId        string

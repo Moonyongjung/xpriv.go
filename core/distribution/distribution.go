@@ -28,8 +28,8 @@ func MakeWithdrawRewardsMsg(withdrawRewardsMsg types.WithdrawRewardsMsg, privKey
 }
 
 // (Tx) make msg - withdraw all rewards
-func MakeWithdrawAllRewardsMsg(privKey key.PrivateKey, grpcConn grpc.ClientConn, ctx context.Context) ([]sdk.Msg, error) {
-	return parseWithdrawAllRewardsArgs(privKey, grpcConn, ctx)
+func MakeWithdrawAllRewardsMsg(privKey key.PrivateKey, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context) ([]sdk.Msg, error) {
+	return parseWithdrawAllRewardsArgs(privKey, lcdUrl, grpcUrl, grpcConn, ctx)
 }
 
 // (Tx) make msg - withdraw address

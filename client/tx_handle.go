@@ -7,6 +7,7 @@ import (
 
 	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
 	mcrisis "github.com/Moonyongjung/xpla-private-chain.go/core/crisis"
+	mdid "github.com/Moonyongjung/xpla-private-chain.go/core/did"
 	mdist "github.com/Moonyongjung/xpla-private-chain.go/core/distribution"
 	mfeegrant "github.com/Moonyongjung/xpla-private-chain.go/core/feegrant"
 	mgov "github.com/Moonyongjung/xpla-private-chain.go/core/gov"
@@ -21,6 +22,7 @@ import (
 	"github.com/Moonyongjung/xpla-private-chain.go/util"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
 	cmclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -58,6 +60,19 @@ func setTxBuilderMsg(xplac *XplaClient) (cmclient.TxBuilder, error) {
 		// Crisis module
 	} else if xplac.MsgType == mcrisis.CrisisInvariantBrokenMsgType {
 		convertMsg, _ := xplac.Msg.(crisistypes.MsgVerifyInvariant)
+		builder.SetMsgs(&convertMsg)
+
+		// DID module
+	} else if xplac.MsgType == mdid.DidCreateDidMsgType {
+		convertMsg, _ := xplac.Msg.(didtypes.MsgCreateDID)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mdid.DidUpdateDidMsgType {
+		convertMsg, _ := xplac.Msg.(didtypes.MsgUpdateDID)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mdid.DidDeactivateDidMsgType {
+		convertMsg, _ := xplac.Msg.(didtypes.MsgDeactivateDID)
 		builder.SetMsgs(&convertMsg)
 
 		// Distribution module

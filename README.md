@@ -11,6 +11,7 @@ Usage of modules and xpla client.
 |Bank|[README](./core/bank/README.md)||
 |Base|[README](./core/base/README.md)||
 |Crisis|[README](./core/crisis/README.md)||
+|DID|[README](./core/did/README.md)||
 |Distribution|[README](./core/distribution/README.md)||
 |Evidence|[README](./core/evidence/README.md)||
 |EVM|[README](./core/evm/README.md)||
