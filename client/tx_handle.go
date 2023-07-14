@@ -12,6 +12,7 @@ import (
 	mfeegrant "github.com/Moonyongjung/xpla-private-chain.go/core/feegrant"
 	mgov "github.com/Moonyongjung/xpla-private-chain.go/core/gov"
 	mparams "github.com/Moonyongjung/xpla-private-chain.go/core/params"
+	mpriv "github.com/Moonyongjung/xpla-private-chain.go/core/private"
 	mslashing "github.com/Moonyongjung/xpla-private-chain.go/core/slashing"
 	mstaking "github.com/Moonyongjung/xpla-private-chain.go/core/staking"
 	mupgrade "github.com/Moonyongjung/xpla-private-chain.go/core/upgrade"
@@ -23,6 +24,7 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
+	privtypes "github.com/Moonyongjung/xpla-private-chain/x/private/types"
 	cmclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -125,6 +127,35 @@ func setTxBuilderMsg(xplac *XplaClient) (cmclient.TxBuilder, error) {
 		// Params module
 	} else if xplac.MsgType == mparams.ParamsProposalParamChangeMsgType {
 		convertMsg, _ := xplac.Msg.(govtypes.MsgSubmitProposal)
+		builder.SetMsgs(&convertMsg)
+
+		// Private module
+	} else if xplac.MsgType == mpriv.PrivateInitialAdminMsgType {
+		convertMsg, _ := xplac.Msg.(privtypes.MsgInitialAdmin)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mpriv.PrivateAddAdminMsgType {
+		convertMsg, _ := xplac.Msg.(privtypes.MsgAddAdmin)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mpriv.PrivateParticipateMsgType {
+		convertMsg, _ := xplac.Msg.(privtypes.MsgParticipate)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mpriv.PrivateAcceptMsgType {
+		convertMsg, _ := xplac.Msg.(privtypes.MsgAccept)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mpriv.PrivateDenyMsgType {
+		convertMsg, _ := xplac.Msg.(privtypes.MsgDeny)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mpriv.PrivateExileMsgType {
+		convertMsg, _ := xplac.Msg.(privtypes.MsgExile)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == mpriv.PrivateQuitMsgType {
+		convertMsg, _ := xplac.Msg.(privtypes.MsgQuit)
 		builder.SetMsgs(&convertMsg)
 
 		// slashing module

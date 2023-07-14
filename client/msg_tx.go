@@ -9,6 +9,7 @@ import (
 	mfeegrant "github.com/Moonyongjung/xpla-private-chain.go/core/feegrant"
 	mgov "github.com/Moonyongjung/xpla-private-chain.go/core/gov"
 	mparams "github.com/Moonyongjung/xpla-private-chain.go/core/params"
+	mpriv "github.com/Moonyongjung/xpla-private-chain.go/core/private"
 	mslashing "github.com/Moonyongjung/xpla-private-chain.go/core/slashing"
 	mstaking "github.com/Moonyongjung/xpla-private-chain.go/core/staking"
 	mupgrade "github.com/Moonyongjung/xpla-private-chain.go/core/upgrade"
@@ -269,6 +270,92 @@ func (xplac *XplaClient) ParamChange(paramChangeMsg types.ParamChangeMsg) *XplaC
 	}
 	xplac.Module = mparams.ParamsModule
 	xplac.MsgType = mparams.ParamsProposalParamChangeMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Private module
+
+// Set the initial administrator of the private chain
+func (xplac *XplaClient) InitialAdmin(initialAdminMsg types.InitialAdminMsg) *XplaClient {
+	msg, err := mpriv.MakeInitialAdminMsg(initialAdminMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateInitialAdminMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Enroll additional admin of the private chain
+func (xplac *XplaClient) AddAdmin(addAdminMsg types.AddAdminMsg) *XplaClient {
+	msg, err := mpriv.MakeAddAdminMsg(addAdminMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateAddAdminMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Request to participate to the private chain.
+func (xplac *XplaClient) Participate(participateMsg types.ParticipateMsg) *XplaClient {
+	msg, err := mpriv.MakeParticipateMsg(participateMsg, xplac.GetLcdURL(), xplac.GetGrpcUrl(), xplac.GetGrpcClient(), xplac.Opts.PrivateKey, xplac.GetContext())
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateParticipateMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Accept a participant to join the private chain
+func (xplac *XplaClient) Accept(acceptMsg types.AcceptMsg) *XplaClient {
+	msg, err := mpriv.MakeAcceptMsg(acceptMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateAcceptMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Deny a participant to join the private chain
+func (xplac *XplaClient) Deny(denyMsg types.DenyMsg) *XplaClient {
+	msg, err := mpriv.MakeDenyMsg(denyMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateDenyMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Exile a participant from private chain
+func (xplac *XplaClient) Exile(exileMsg types.ExileMsg) *XplaClient {
+	msg, err := mpriv.MakeExileMsg(exileMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateExileMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Quit from private chain
+func (xplac *XplaClient) Quit(quitMsg types.QuitMsg) *XplaClient {
+	msg, err := mpriv.MakeQuitMsg(quitMsg, xplac.GetLcdURL(), xplac.GetGrpcUrl(), xplac.GetGrpcClient(), xplac.Opts.PrivateKey, xplac.GetContext())
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateQuitMsgType
 	xplac.Msg = msg
 	return xplac
 }

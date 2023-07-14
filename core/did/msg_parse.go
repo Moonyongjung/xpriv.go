@@ -3,7 +3,6 @@ package did
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -94,7 +93,12 @@ func parseUpdateDIDArgs(updateDIDMsg types.UpdateDIDMsg, lcdUrl, grpcUrl string,
 		return didtypes.MsgUpdateDID{}, util.LogErr(errors.ErrInvalidRequest, err)
 	}
 
-	sign, err := signUsingCurrentSeq(did, lcdUrl, grpcUrl, grpcConn, ctx, didPrivKey, doc)
+	didDocumentWithSeq, err := util.GetDIDDocByQueryClient(did, lcdUrl, grpcUrl, grpcConn, ctx)
+	if err != nil {
+		return didtypes.MsgUpdateDID{}, util.LogErr(errors.ErrInvalidRequest, err)
+	}
+
+	sign, err := didtypes.Sign(&doc, didDocumentWithSeq.Sequence, didPrivKey)
 	if err != nil {
 		return didtypes.MsgUpdateDID{}, util.LogErr(errors.ErrParse, err)
 	}
@@ -128,7 +132,12 @@ func parseDeactivateDIDArgs(deactivateDIDMsg types.DeactivateDIDMsg, lcdUrl, grp
 		Id: did,
 	}
 
-	sign, err := signUsingCurrentSeq(did, lcdUrl, grpcUrl, grpcConn, ctx, didPrivKey, doc)
+	didDocumentWithSeq, err := util.GetDIDDocByQueryClient(did, lcdUrl, grpcUrl, grpcConn, ctx)
+	if err != nil {
+		return didtypes.MsgDeactivateDID{}, util.LogErr(errors.ErrInvalidRequest, err)
+	}
+
+	sign, err := didtypes.Sign(&doc, didDocumentWithSeq.Sequence, didPrivKey)
 	if err != nil {
 		return didtypes.MsgDeactivateDID{}, util.LogErr(errors.ErrParse, err)
 	}
@@ -189,32 +198,32 @@ func getPrivKeyFromKeyStore(didKeyPath, didPassphrase string, verificationMethod
 	return xcrypto.PrivKeyFromBytes(didPrivKeyBytes)
 }
 
-func signUsingCurrentSeq(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context, didPrivKey secp256k1.PrivKey, doc didtypes.DIDDocument) ([]byte, error) {
-	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
-	var didRes didtypes.QueryDIDResponse
-	if grpcUrl != "" {
-		queryClient := didtypes.NewQueryClient(grpcConn)
-		res, err := queryClient.DID(
-			ctx,
-			&didtypes.QueryDIDRequest{
-				DidBase64: didBase64,
-			},
-		)
-		if err != nil {
-			return nil, err
-		}
+// func signUsingCurrentSeq(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context, didPrivKey secp256k1.PrivKey, doc didtypes.DIDDocument) ([]byte, error) {
+// 	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
+// 	var didRes didtypes.QueryDIDResponse
+// 	if grpcUrl != "" {
+// 		queryClient := didtypes.NewQueryClient(grpcConn)
+// 		res, err := queryClient.DID(
+// 			ctx,
+// 			&didtypes.QueryDIDRequest{
+// 				DidBase64: didBase64,
+// 			},
+// 		)
+// 		if err != nil {
+// 			return nil, err
+// 		}
 
-		didRes = *res
+// 		didRes = *res
 
-	} else {
-		url := lcdUrl + "/xpla/did/v1beta1/dids/" + didBase64
+// 	} else {
+// 		url := lcdUrl + "/xpla/did/v1beta1/dids/" + didBase64
 
-		out, err := util.CtxHttpClient("GET", url, nil, ctx)
-		if err != nil {
-			return nil, err
-		}
-		json.Unmarshal(out, &didRes)
-	}
+// 		out, err := util.CtxHttpClient("GET", url, nil, ctx)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		json.Unmarshal(out, &didRes)
+// 	}
 
-	return didtypes.Sign(&doc, didRes.DidDocumentWithSeq.Sequence, didPrivKey)
-}
+// 	return didtypes.Sign(&doc, didRes.DidDocumentWithSeq.Sequence, didPrivKey)
+// }

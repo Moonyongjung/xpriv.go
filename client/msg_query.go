@@ -12,6 +12,7 @@ import (
 	mgov "github.com/Moonyongjung/xpla-private-chain.go/core/gov"
 	mmint "github.com/Moonyongjung/xpla-private-chain.go/core/mint"
 	mparams "github.com/Moonyongjung/xpla-private-chain.go/core/params"
+	mpriv "github.com/Moonyongjung/xpla-private-chain.go/core/private"
 	mslashing "github.com/Moonyongjung/xpla-private-chain.go/core/slashing"
 	mstaking "github.com/Moonyongjung/xpla-private-chain.go/core/staking"
 	mupgrade "github.com/Moonyongjung/xpla-private-chain.go/core/upgrade"
@@ -937,6 +938,81 @@ func (xplac *XplaClient) QuerySubspace(subspaceMsg types.SubspaceMsg) *XplaClien
 	}
 	xplac.Module = mparams.ParamsModule
 	xplac.MsgType = mparams.ParamsQuerySubpsaceMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
+// Private module
+
+// Query all administrators in the private chain.
+func (xplac *XplaClient) Admin() *XplaClient {
+	msg, err := mpriv.MakeQueryAdminMsg()
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateQueryAdminMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
+// Query participate state of the DID.
+func (xplac *XplaClient) ParticipateState(participateStateMsg types.ParticipateStateMsg) *XplaClient {
+	msg, err := mpriv.MakeParticipateStateMsg(participateStateMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateParticipateStateMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
+// Gen the DID signature from DID key.
+func (xplac *XplaClient) GenDIDSign(genDIDSignMsg types.GenDIDSignMsg) *XplaClient {
+	msg, err := mpriv.MakeGenDIDSignMsg(genDIDSignMsg, xplac.GetLcdURL(), xplac.GetGrpcUrl(), xplac.GetGrpcClient(), xplac.GetContext())
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateGenDIDSignMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
+// Get the verifiable credential which is able to use on the private chain for access control.
+// Only the VC owner can query by using DID signature
+func (xplac *XplaClient) IssueVC(issueVCMsg types.IssueVCMsg) *XplaClient {
+	msg, err := mpriv.MakeIssueVCMsg(issueVCMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateIssueVCMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
+// Get the verifiable presentation which is able to use on the private chain for access control.
+// Participants can acess the private chain when this presentation submit to chain as verifier.
+// Only the VP owner can query by using DID signature
+func (xplac *XplaClient) GetVP(getVPMsg types.GetVPMsg) *XplaClient {
+	msg, err := mpriv.MakeGetVPMsg(getVPMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateGetVPMsgType
 	xplac.Msg = msg
 
 	return xplac

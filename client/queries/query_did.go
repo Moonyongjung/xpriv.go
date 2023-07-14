@@ -9,7 +9,7 @@ import (
 	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
 )
 
-// Query client for bank module.
+// Query client for DID module.
 func (i IXplaClient) QueryDID() (string, error) {
 	if i.QueryType == types.QueryGrpc {
 		return queryByGrpcDID(i)

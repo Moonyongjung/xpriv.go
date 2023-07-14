@@ -1,13 +1,19 @@
 package util
 
 import (
+	"context"
+	"encoding/base64"
+	"fmt"
 	"math/big"
 	"strconv"
 	"strings"
 
 	"github.com/Moonyongjung/xpla-private-chain.go/types"
+	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/gogo/protobuf/grpc"
+	"github.com/gogo/protobuf/jsonpb"
 )
 
 func GetAddrByPrivKey(priv cryptotypes.PrivKey) (sdk.AccAddress, error) {
@@ -80,4 +86,37 @@ func MakeQueryLcdUrl(metadata string) string {
 
 func MakeQueryLabels(labels ...string) string {
 	return strings.Join(labels, "/")
+}
+
+func GetDIDDocByQueryClient(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context) (didtypes.DIDDocumentWithSeq, error) {
+	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
+	var didRes didtypes.QueryDIDResponse
+	if grpcUrl != "" {
+		didQueryclient := didtypes.NewQueryClient(grpcConn)
+		didQueryMsg := didtypes.QueryDIDRequest{
+			DidBase64: didBase64,
+		}
+		didRes, err := didQueryclient.DID(ctx, &didQueryMsg)
+		if err != nil {
+			return didtypes.DIDDocumentWithSeq{}, err
+		}
+
+		if didRes.DidDocumentWithSeq.Empty() {
+			return didtypes.DIDDocumentWithSeq{}, fmt.Errorf("DID is empty")
+		}
+		if didRes.DidDocumentWithSeq.Deactivated() {
+			return didtypes.DIDDocumentWithSeq{}, fmt.Errorf("DID is deactivate")
+		}
+
+	} else {
+		url := lcdUrl + "/xpla/did/v1beta1/dids/" + didBase64
+
+		out, err := CtxHttpClient("GET", url, nil, ctx)
+		if err != nil {
+			return didtypes.DIDDocumentWithSeq{}, err
+		}
+		jsonpb.Unmarshal(strings.NewReader(string(out)), &didRes)
+	}
+
+	return didRes.DidDocumentWithSeq, nil
 }

@@ -13,6 +13,7 @@ import (
 	mgov "github.com/Moonyongjung/xpla-private-chain.go/core/gov"
 	mmint "github.com/Moonyongjung/xpla-private-chain.go/core/mint"
 	mparams "github.com/Moonyongjung/xpla-private-chain.go/core/params"
+	mpriv "github.com/Moonyongjung/xpla-private-chain.go/core/private"
 	mslashing "github.com/Moonyongjung/xpla-private-chain.go/core/slashing"
 	mstaking "github.com/Moonyongjung/xpla-private-chain.go/core/staking"
 	mupgrade "github.com/Moonyongjung/xpla-private-chain.go/core/upgrade"
@@ -76,6 +77,9 @@ func (xplac *XplaClient) Query() (string, error) {
 
 	} else if xplac.Module == mparams.ParamsModule {
 		return ixplaClient.QueryParams()
+
+	} else if xplac.Module == mpriv.PrivateModule {
+		return ixplaClient.QueryPrivate()
 
 	} else if xplac.Module == mslashing.SlashingModule {
 		return ixplaClient.QuerySlashing()
