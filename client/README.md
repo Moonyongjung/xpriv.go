@@ -101,6 +101,10 @@ type Options struct {
     // Set output document name when created transaction with json file
     // "Generate only" is same that OutputDocument is not empty string 
     OutputDocument string	
+    // Set VP by using json file
+    VPPath string
+    // Set VP by using string
+    VPString string
 }
 ```
 

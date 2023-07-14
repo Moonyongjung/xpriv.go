@@ -50,6 +50,7 @@ type ModuleClient interface {
 	GetModule() string
 	GetMsg() interface{}
 	GetMsgType() string
+	GetVPByte() []byte
 }
 
 func NewIXplaClient(moduleClient ModuleClient, qt uint8) *IXplaClient {

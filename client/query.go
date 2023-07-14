@@ -1,6 +1,8 @@
 package client
 
 import (
+	"encoding/base64"
+
 	"github.com/Moonyongjung/xpla-private-chain.go/client/queries"
 	mauth "github.com/Moonyongjung/xpla-private-chain.go/core/auth"
 	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
@@ -21,6 +23,7 @@ import (
 	"github.com/Moonyongjung/xpla-private-chain.go/types"
 	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
 	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	"google.golang.org/grpc/metadata"
 )
 
 // Query transactions and xpla blockchain information.
@@ -43,6 +46,15 @@ func (xplac *XplaClient) Query() (string, error) {
 	}
 
 	qt := setQueryType(xplac)
+
+	if xplac.GetVPByte() != nil {
+		base64VP := base64.StdEncoding.EncodeToString(xplac.GetVPByte())
+
+		privateGrpcHeader := metadata.New(map[string]string{"x-vp": base64VP})
+		newContext := metadata.NewOutgoingContext(xplac.GetContext(), privateGrpcHeader)
+		xplac.WithContext(newContext)
+	}
+
 	ixplaClient := queries.NewIXplaClient(xplac, qt)
 
 	if xplac.Module == mauth.AuthModule {

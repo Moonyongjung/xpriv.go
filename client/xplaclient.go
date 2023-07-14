@@ -2,6 +2,9 @@ package client
 
 import (
 	"context"
+	"encoding/json"
+	"io"
+	"os"
 
 	"github.com/Moonyongjung/xpla-private-chain.go/core"
 	"github.com/Moonyongjung/xpla-private-chain.go/key"
@@ -23,6 +26,7 @@ type XplaClient struct {
 	EncodingConfig params.EncodingConfig
 	Grpc           grpc1.ClientConn
 	Context        context.Context
+	VP             []byte
 
 	Opts Options
 
@@ -51,6 +55,8 @@ type Options struct {
 	EvmRpcURL      string
 	Pagination     types.Pagination
 	OutputDocument string
+	VPPath         string
+	VPString       string
 }
 
 // Make new xpla client.
@@ -85,7 +91,9 @@ func (xplac *XplaClient) WithOptions(
 		WithRpc(options.RpcURL).
 		WithEvmRpc(options.EvmRpcURL).
 		WithPagination(options.Pagination).
-		WithOutputDocument(options.OutputDocument)
+		WithOutputDocument(options.OutputDocument).
+		WithVPByPath(options.VPPath).
+		WithVPByString(options.VPString)
 }
 
 // Set chain ID
@@ -223,6 +231,40 @@ func (xplac *XplaClient) WithOutputDocument(outputDocument string) *XplaClient {
 	return xplac
 }
 
+// Set Verifiable Presentation by file path
+func (xplac *XplaClient) WithVPByPath(vpPath string) *XplaClient {
+	if xplac.VP == nil {
+		f, err := os.Open(vpPath)
+		if err != nil {
+			xplac.Err = err
+		}
+		defer f.Close()
+
+		jsonByte, err := io.ReadAll(f)
+		if err != nil {
+			xplac.Err = err
+		}
+
+		xplac.VP = jsonByte
+	}
+
+	return xplac
+}
+
+// Set Verifiable Presentation by string
+func (xplac *XplaClient) WithVPByString(vp string) *XplaClient {
+	if xplac.VP == nil {
+		jsonByte, err := json.Marshal(vp)
+		if err != nil {
+			xplac.Err = err
+		}
+
+		xplac.VP = jsonByte
+	}
+
+	return xplac
+}
+
 // Get chain ID
 func (xplac *XplaClient) GetChainId() string {
 	return xplac.ChainId
@@ -341,4 +383,9 @@ func (xplac *XplaClient) GetMsgType() string {
 // Get message
 func (xplac *XplaClient) GetMsg() interface{} {
 	return xplac.Msg
+}
+
+// Get verifiable presentation
+func (xplac *XplaClient) GetVPByte() []byte {
+	return xplac.VP
 }
