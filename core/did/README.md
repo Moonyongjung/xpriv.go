@@ -1,4 +1,8 @@
 # DID module
+
+## Note
+The passphrase is used in the DID module is not sended to the chain.
+
 ## Usage
 ### (Tx) Create DID
 ```go
