@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/core"
-	mdist "github.com/Moonyongjung/xpla-private-chain.go/core/distribution"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	"github.com/Moonyongjung/xpriv.go/core"
+	mdist "github.com/Moonyongjung/xpriv.go/core/distribution"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 

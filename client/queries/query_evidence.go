@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mevidence "github.com/Moonyongjung/xpla-private-chain.go/core/evidence"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mevidence "github.com/Moonyongjung/xpriv.go/core/evidence"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	evidencev1beta1 "cosmossdk.io/api/cosmos/evidence/v1beta1"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"

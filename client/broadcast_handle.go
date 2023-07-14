@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"time"
 
-	mevm "github.com/Moonyongjung/xpla-private-chain.go/core/evm"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mevm "github.com/Moonyongjung/xpriv.go/core/evm"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"

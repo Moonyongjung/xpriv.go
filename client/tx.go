@@ -4,11 +4,11 @@ import (
 	"encoding/base64"
 	"encoding/json"
 
-	mevm "github.com/Moonyongjung/xpla-private-chain.go/core/evm"
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mevm "github.com/Moonyongjung/xpriv.go/core/evm"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	cmclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"

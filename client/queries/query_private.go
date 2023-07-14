@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mpriv "github.com/Moonyongjung/xpla-private-chain.go/core/private"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mpriv "github.com/Moonyongjung/xpriv.go/core/private"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	privtypes "github.com/Moonyongjung/xpla-private-chain/x/private/types"
 )

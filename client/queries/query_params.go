@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mparams "github.com/Moonyongjung/xpla-private-chain.go/core/params"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mparams "github.com/Moonyongjung/xpriv.go/core/params"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	paramsv1beta1 "cosmossdk.io/api/cosmos/params/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"

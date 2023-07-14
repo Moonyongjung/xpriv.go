@@ -1,8 +1,8 @@
 package distribution
 
 import (
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
 	"golang.org/x/net/context"
 
 	"github.com/Moonyongjung/xpla-private-chain/app/params"

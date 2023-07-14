@@ -3,9 +3,9 @@ package gov
 import (
 	"context"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/gogo/protobuf/grpc"

@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"
+	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 

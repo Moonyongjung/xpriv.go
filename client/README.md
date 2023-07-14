@@ -1,5 +1,5 @@
 # Xpla client
-The xpla client is a client for performing all functions within the xpla-private-chain.go library.
+The xpla client is a client for performing all functions within the xpriv.go library.
 The user mandatorily inputs chain ID.
 
 ## Ready to run Xpla client

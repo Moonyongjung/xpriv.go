@@ -1,21 +1,21 @@
 package client
 
 import (
-	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
-	mcrisis "github.com/Moonyongjung/xpla-private-chain.go/core/crisis"
-	mdid "github.com/Moonyongjung/xpla-private-chain.go/core/did"
-	mdist "github.com/Moonyongjung/xpla-private-chain.go/core/distribution"
-	mevm "github.com/Moonyongjung/xpla-private-chain.go/core/evm"
-	mfeegrant "github.com/Moonyongjung/xpla-private-chain.go/core/feegrant"
-	mgov "github.com/Moonyongjung/xpla-private-chain.go/core/gov"
-	mparams "github.com/Moonyongjung/xpla-private-chain.go/core/params"
-	mpriv "github.com/Moonyongjung/xpla-private-chain.go/core/private"
-	mslashing "github.com/Moonyongjung/xpla-private-chain.go/core/slashing"
-	mstaking "github.com/Moonyongjung/xpla-private-chain.go/core/staking"
-	mupgrade "github.com/Moonyongjung/xpla-private-chain.go/core/upgrade"
-	mwasm "github.com/Moonyongjung/xpla-private-chain.go/core/wasm"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
+	mcrisis "github.com/Moonyongjung/xpriv.go/core/crisis"
+	mdid "github.com/Moonyongjung/xpriv.go/core/did"
+	mdist "github.com/Moonyongjung/xpriv.go/core/distribution"
+	mevm "github.com/Moonyongjung/xpriv.go/core/evm"
+	mfeegrant "github.com/Moonyongjung/xpriv.go/core/feegrant"
+	mgov "github.com/Moonyongjung/xpriv.go/core/gov"
+	mparams "github.com/Moonyongjung/xpriv.go/core/params"
+	mpriv "github.com/Moonyongjung/xpriv.go/core/private"
+	mslashing "github.com/Moonyongjung/xpriv.go/core/slashing"
+	mstaking "github.com/Moonyongjung/xpriv.go/core/staking"
+	mupgrade "github.com/Moonyongjung/xpriv.go/core/upgrade"
+	mwasm "github.com/Moonyongjung/xpriv.go/core/wasm"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util"
 )
 
 // Bank module

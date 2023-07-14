@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mdist "github.com/Moonyongjung/xpla-private-chain.go/core/distribution"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mdist "github.com/Moonyongjung/xpriv.go/core/distribution"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	distv1beta1 "cosmossdk.io/api/cosmos/distribution/v1beta1"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"

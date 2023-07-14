@@ -3,10 +3,10 @@ package queries
 import (
 	"context"
 
-	mupgrade "github.com/Moonyongjung/xpla-private-chain.go/core/upgrade"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mupgrade "github.com/Moonyongjung/xpriv.go/core/upgrade"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	upgradev1beta1 "cosmossdk.io/api/cosmos/upgrade/v1beta1"
 	cmclient "github.com/cosmos/cosmos-sdk/client"

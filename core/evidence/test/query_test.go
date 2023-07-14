@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/core"
-	mevidence "github.com/Moonyongjung/xpla-private-chain.go/core/evidence"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	"github.com/Moonyongjung/xpriv.go/core"
+	mevidence "github.com/Moonyongjung/xpriv.go/core/evidence"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"

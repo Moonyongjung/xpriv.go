@@ -1,5 +1,5 @@
-# xpla-private-chain.go
-Xpla-private-chain.go is a Golang SDK for writing applications that interact with the Xpla private blockchain and provides simple abstractions over core data structures, serialization, key management, and API request generation.
+# xpriv.go
+xpriv.go is a Golang SDK for writing applications that interact with the Xpla private blockchain and provides simple abstractions over core data structures, serialization, key management, and API request generation.
 
 ## Usage
 Usage of modules and xpla client.

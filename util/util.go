@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
 	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
+	"github.com/Moonyongjung/xpriv.go/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gogo/protobuf/grpc"

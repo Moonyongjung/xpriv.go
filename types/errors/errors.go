@@ -5,14 +5,14 @@ type XGoError struct {
 	desc    string
 }
 
-// Return error code and message generating on the xpla-private-chain.go.
+// Return error code and message generating on the xpriv.go.
 var (
 	ErrInvalidMsgType      = new(1, "invalid msg type")
 	ErrInvalidRequest      = new(2, "invalid request")
 	ErrNotSatisfiedOptions = new(3, "not satisfied option parameter")
 	ErrFailedToMarshal     = new(4, "failed to marshal")
 	ErrFailedToUnmarshal   = new(5, "failed to unmarshal")
-	ErrNotSupport          = new(6, "not support xpla-private-chain.go")
+	ErrNotSupport          = new(6, "not support xpriv.go")
 	ErrNotFound            = new(7, "not found")
 	ErrTxFailed            = new(8, "tx failed")
 	ErrInsufficientParams  = new(9, "insufficient parameters")

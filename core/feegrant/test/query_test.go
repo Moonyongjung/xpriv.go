@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	mfeegrant "github.com/Moonyongjung/xpla-private-chain.go/core/feegrant"
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
+	mfeegrant "github.com/Moonyongjung/xpriv.go/core/feegrant"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 

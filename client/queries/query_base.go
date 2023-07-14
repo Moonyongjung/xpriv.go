@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mbase "github.com/Moonyongjung/xpla-private-chain.go/core/base"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mbase "github.com/Moonyongjung/xpriv.go/core/base"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	tmv1beta1 "cosmossdk.io/api/cosmos/base/tendermint/v1beta1"
 	cmclient "github.com/cosmos/cosmos-sdk/client"

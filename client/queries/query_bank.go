@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mbank "github.com/Moonyongjung/xpla-private-chain.go/core/bank"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	bankv1beta1 "cosmossdk.io/api/cosmos/bank/v1beta1"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"

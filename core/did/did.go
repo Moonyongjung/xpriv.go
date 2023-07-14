@@ -3,8 +3,8 @@ package did
 import (
 	"context"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/gogo/protobuf/grpc"
 
 	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"

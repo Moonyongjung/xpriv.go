@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	mparams "github.com/Moonyongjung/xpla-private-chain.go/core/params"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	mparams "github.com/Moonyongjung/xpriv.go/core/params"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"

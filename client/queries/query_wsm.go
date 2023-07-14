@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
-	mwasm "github.com/Moonyongjung/xpla-private-chain.go/core/wasm"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mwasm "github.com/Moonyongjung/xpriv.go/core/wasm"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 )

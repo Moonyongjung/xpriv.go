@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/core"
-	mgov "github.com/Moonyongjung/xpla-private-chain.go/core/gov"
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	"github.com/Moonyongjung/xpriv.go/core"
+	mgov "github.com/Moonyongjung/xpriv.go/core/gov"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"

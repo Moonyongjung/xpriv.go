@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/core"
-	mstaking "github.com/Moonyongjung/xpla-private-chain.go/core/staking"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	"github.com/Moonyongjung/xpriv.go/core"
+	mstaking "github.com/Moonyongjung/xpriv.go/core/staking"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"

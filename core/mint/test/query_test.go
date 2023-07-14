@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	mmint "github.com/Moonyongjung/xpla-private-chain.go/core/mint"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	mmint "github.com/Moonyongjung/xpriv.go/core/mint"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"

@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mslashing "github.com/Moonyongjung/xpla-private-chain.go/core/slashing"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mslashing "github.com/Moonyongjung/xpriv.go/core/slashing"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	slashingv1beta1 "cosmossdk.io/api/cosmos/slashing/v1beta1"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"

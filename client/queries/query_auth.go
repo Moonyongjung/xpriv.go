@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mauth "github.com/Moonyongjung/xpla-private-chain.go/core/auth"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mauth "github.com/Moonyongjung/xpriv.go/core/auth"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	authv1beta1 "cosmossdk.io/api/cosmos/auth/v1beta1"
 	"github.com/cosmos/cosmos-sdk/types/rest"

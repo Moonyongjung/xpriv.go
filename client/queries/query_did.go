@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mdid "github.com/Moonyongjung/xpla-private-chain.go/core/did"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mdid "github.com/Moonyongjung/xpriv.go/core/did"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
 )

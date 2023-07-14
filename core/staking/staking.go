@@ -1,9 +1,9 @@
 package staking
 
 import (
-	"github.com/Moonyongjung/xpla-private-chain.go/core"
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
+	"github.com/Moonyongjung/xpriv.go/core"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )

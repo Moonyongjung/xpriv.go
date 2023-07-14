@@ -6,10 +6,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/core"
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	"github.com/Moonyongjung/xpriv.go/core"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	"github.com/Moonyongjung/xpla-private-chain/app/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,7 +19,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// The xpla client is a client for performing all functions within the xpla-private-chain.go library.
+// The xpla client is a client for performing all functions within the xpriv.go library.
 // The user mandatorily inputs chain ID.
 type XplaClient struct {
 	ChainId        string

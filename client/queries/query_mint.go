@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mmint "github.com/Moonyongjung/xpla-private-chain.go/core/mint"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mmint "github.com/Moonyongjung/xpriv.go/core/mint"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	mintv1beta1 "cosmossdk.io/api/cosmos/mint/v1beta1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"

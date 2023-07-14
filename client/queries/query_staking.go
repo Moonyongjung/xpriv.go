@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mstaking "github.com/Moonyongjung/xpla-private-chain.go/core/staking"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mstaking "github.com/Moonyongjung/xpriv.go/core/staking"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	stakingv1beta1 "cosmossdk.io/api/cosmos/staking/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"

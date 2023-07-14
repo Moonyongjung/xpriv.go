@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	mupgrade "github.com/Moonyongjung/xpla-private-chain.go/core/upgrade"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/util/testutil"
+	mupgrade "github.com/Moonyongjung/xpriv.go/core/upgrade"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/util/testutil"
 
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"

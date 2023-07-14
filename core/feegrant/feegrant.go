@@ -1,8 +1,8 @@
 package feegrant
 
 import (
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 )
 

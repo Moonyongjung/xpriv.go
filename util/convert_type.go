@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 )

@@ -1,8 +1,8 @@
 package params
 
 import (
-	"github.com/Moonyongjung/xpla-private-chain.go/key"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
+	"github.com/Moonyongjung/xpriv.go/key"
+	"github.com/Moonyongjung/xpriv.go/types"
 
 	"github.com/Moonyongjung/xpla-private-chain/app/params"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"

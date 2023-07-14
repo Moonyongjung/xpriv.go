@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
 )
 
 func JsonMarshalData(jsonData interface{}) ([]byte, error) {

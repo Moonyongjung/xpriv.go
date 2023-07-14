@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	xgoerrors "github.com/Moonyongjung/xpla-private-chain.go/types/errors"
+	xgoerrors "github.com/Moonyongjung/xpriv.go/types/errors"
 )
 
 func LogInfo(log ...interface{}) {

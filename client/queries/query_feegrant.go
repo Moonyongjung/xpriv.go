@@ -1,10 +1,10 @@
 package queries
 
 import (
-	mfeegrant "github.com/Moonyongjung/xpla-private-chain.go/core/feegrant"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	"github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	mfeegrant "github.com/Moonyongjung/xpriv.go/core/feegrant"
+	"github.com/Moonyongjung/xpriv.go/types"
+	"github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	feegrantv1beta1 "cosmossdk.io/api/cosmos/feegrant/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"

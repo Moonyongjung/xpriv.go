@@ -1,8 +1,8 @@
 package evidence
 
 import (
-	"github.com/Moonyongjung/xpla-private-chain.go/core"
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
+	"github.com/Moonyongjung/xpriv.go/core"
+	"github.com/Moonyongjung/xpriv.go/types"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 )
 

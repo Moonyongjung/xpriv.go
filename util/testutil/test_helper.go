@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Moonyongjung/xpla-private-chain.go/types"
-	xgoerrors "github.com/Moonyongjung/xpla-private-chain.go/types/errors"
-	"github.com/Moonyongjung/xpla-private-chain.go/util"
+	"github.com/Moonyongjung/xpriv.go/types"
+	xgoerrors "github.com/Moonyongjung/xpriv.go/types/errors"
+	"github.com/Moonyongjung/xpriv.go/util"
 
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/app/helpers"

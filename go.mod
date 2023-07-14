@@ -1,4 +1,4 @@
-module github.com/Moonyongjung/xpla-private-chain.go
+module github.com/Moonyongjung/xpriv.go
 
 go 1.20
 
