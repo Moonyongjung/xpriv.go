@@ -1,6 +1,7 @@
 package client
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"time"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/Moonyongjung/xpriv.go/types/errors"
 	"github.com/Moonyongjung/xpriv.go/util"
+	"google.golang.org/grpc/metadata"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -49,6 +51,14 @@ func broadcastTx(xplac *XplaClient, txBytes []byte, mode txtypes.BroadcastMode) 
 
 		xplaTxRes.Response = txResponse
 	} else {
+		if xplac.GetVPByte() != nil {
+			base64VP := base64.StdEncoding.EncodeToString(xplac.GetVPByte())
+
+			privateGrpcHeader := metadata.New(map[string]string{"x-vp": base64VP})
+			newContext := metadata.NewOutgoingContext(xplac.GetContext(), privateGrpcHeader)
+			xplac.WithContext(newContext)
+		}
+
 		txClient := txtypes.NewServiceClient(xplac.Grpc)
 		txResponse, err := txClient.BroadcastTx(xplac.Context, &broadcastReq)
 		if err != nil {
