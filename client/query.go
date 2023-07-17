@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 
 	"github.com/Moonyongjung/xpriv.go/client/queries"
+	manchor "github.com/Moonyongjung/xpriv.go/core/anchor"
 	mauth "github.com/Moonyongjung/xpriv.go/core/auth"
 	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
 	mbase "github.com/Moonyongjung/xpriv.go/core/base"
@@ -57,7 +58,10 @@ func (xplac *XplaClient) Query() (string, error) {
 
 	ixplaClient := queries.NewIXplaClient(xplac, qt)
 
-	if xplac.Module == mauth.AuthModule {
+	if xplac.Module == manchor.AnchorModule {
+		return ixplaClient.QueryAnchor()
+
+	} else if xplac.Module == mauth.AuthModule {
 		return ixplaClient.QueryAuth()
 
 	} else if xplac.Module == mbank.BankModule {

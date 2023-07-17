@@ -1,4 +1,4 @@
-package did
+package private
 
 const (
 	PrivateModule                  = "private"

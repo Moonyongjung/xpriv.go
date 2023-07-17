@@ -5,6 +5,7 @@ import (
 	"math/big"
 	"os"
 
+	manchor "github.com/Moonyongjung/xpriv.go/core/anchor"
 	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
 	mcrisis "github.com/Moonyongjung/xpriv.go/core/crisis"
 	mdid "github.com/Moonyongjung/xpriv.go/core/did"
@@ -23,6 +24,7 @@ import (
 	"github.com/Moonyongjung/xpriv.go/util"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	anchortypes "github.com/Moonyongjung/xpla-private-chain/x/anchor/types"
 	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
 	privtypes "github.com/Moonyongjung/xpla-private-chain/x/private/types"
 	cmclient "github.com/cosmos/cosmos-sdk/client"
@@ -54,8 +56,17 @@ func setTxBuilderMsg(xplac *XplaClient) (cmclient.TxBuilder, error) {
 
 	builder := xplac.EncodingConfig.TxConfig.NewTxBuilder()
 
-	// Bank module
-	if xplac.MsgType == mbank.BankSendMsgType {
+	// Anchor module
+	if xplac.MsgType == manchor.AnchorRegisterAnchorAccMsgType {
+		convertMsg, _ := xplac.Msg.(anchortypes.MsgRegisterAnchorAcc)
+		builder.SetMsgs(&convertMsg)
+
+	} else if xplac.MsgType == manchor.AnchorChangeAnchorAccMsgType {
+		convertMsg, _ := xplac.Msg.(anchortypes.MsgChangeAnchorAcc)
+		builder.SetMsgs(&convertMsg)
+
+		// Bank module
+	} else if xplac.MsgType == mbank.BankSendMsgType {
 		convertMsg, _ := xplac.Msg.(banktypes.MsgSend)
 		builder.SetMsgs(&convertMsg)
 

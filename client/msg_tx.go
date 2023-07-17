@@ -1,6 +1,7 @@
 package client
 
 import (
+	manchor "github.com/Moonyongjung/xpriv.go/core/anchor"
 	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
 	mcrisis "github.com/Moonyongjung/xpriv.go/core/crisis"
 	mdid "github.com/Moonyongjung/xpriv.go/core/did"
@@ -17,6 +18,32 @@ import (
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/Moonyongjung/xpriv.go/util"
 )
+
+// Anchor module
+
+// Register anchor account of the validator in the private chain
+func (xplac *XplaClient) RegisterAnchorAcc(registerAnchorAccMsg types.RegisterAnchorAccMsg) *XplaClient {
+	msg, err := manchor.MakeRegisterAnchorAccMsg(registerAnchorAccMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorRegisterAnchorAccMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Change anchor account of the validator in the private chain
+func (xplac *XplaClient) ChangeAnchorAcc(changeAnchorAccMsg types.ChangeAnchorAccMsg) *XplaClient {
+	msg, err := manchor.MakeChangeAnchorAccMsg(changeAnchorAccMsg, xplac.Opts.PrivateKey)
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorChangeAnchorAccMsgType
+	xplac.Msg = msg
+	return xplac
+}
 
 // Bank module
 

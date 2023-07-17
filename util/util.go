@@ -96,11 +96,12 @@ func GetDIDDocByQueryClient(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientCon
 		didQueryMsg := didtypes.QueryDIDRequest{
 			DidBase64: didBase64,
 		}
-		didRes, err := didQueryclient.DID(ctx, &didQueryMsg)
+		res, err := didQueryclient.DID(ctx, &didQueryMsg)
 		if err != nil {
 			return didtypes.DIDDocumentWithSeq{}, err
 		}
 
+		didRes = *res
 		if didRes.DidDocumentWithSeq.Empty() {
 			return didtypes.DIDDocumentWithSeq{}, fmt.Errorf("DID is empty")
 		}

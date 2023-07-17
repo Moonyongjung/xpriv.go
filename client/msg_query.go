@@ -1,6 +1,7 @@
 package client
 
 import (
+	manchor "github.com/Moonyongjung/xpriv.go/core/anchor"
 	mauth "github.com/Moonyongjung/xpriv.go/core/auth"
 	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
 	mbase "github.com/Moonyongjung/xpriv.go/core/base"
@@ -21,6 +22,99 @@ import (
 	"github.com/Moonyongjung/xpriv.go/types/errors"
 	"github.com/Moonyongjung/xpriv.go/util"
 )
+
+// Anchor module
+
+// Query mapping info of the anchor account.
+func (xplac *XplaClient) AnchorAcc(anchorAccMsg types.AnchorAccMsg) *XplaClient {
+	msg, err := manchor.MakeAnchorAccMsg(anchorAccMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorQueryAnchorAccMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Query aggregated blocks are saved in the state DB.
+func (xplac *XplaClient) AllAggregatedBlocks() *XplaClient {
+	msg, err := manchor.MakeAllAggregatedBlocksMsg()
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorAllAggregatedBlocksMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Query anchoring info includes from/end height and tx hash are saved in the state DB.
+func (xplac *XplaClient) AnchorInfo(anchorInfoMsg types.AnchorInfoMsg) *XplaClient {
+	msg, err := manchor.MakeAnchorInfoMsg(anchorInfoMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorAnchorInfoMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Query Anchored block is recorded in the anchor contract of the public chain.
+func (xplac *XplaClient) AnchorBlock(anchorBlockMsg types.AnchorBlockMsg) *XplaClient {
+	msg, err := manchor.MakeAnchorBlockMsg(anchorBlockMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorAnchorBlockMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Query anchoring transaction body in the public chain.
+func (xplac *XplaClient) AnchorTxBody(anchorTxBodyMsg types.AnchorTxBodyMsg) *XplaClient {
+	msg, err := manchor.MakeAnchorTxBodyMsg(anchorTxBodyMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorAnchorTxBodyMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Check the consistency of the block in the private chain.
+func (xplac *XplaClient) AnchorVerify(anchorVerifyMsg types.AnchorVerifyMsg) *XplaClient {
+	msg, err := manchor.MakeAnchorVerifyMsg(anchorVerifyMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorVerifyMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Query balances of the anchor account in the public chain.
+func (xplac *XplaClient) AnchorBalances(anchorBalancesMsg types.AnchorBalancesMsg) *XplaClient {
+	msg, err := manchor.MakeAnchorBalancesMsg(anchorBalancesMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorAnchorBalancesMsgType
+	xplac.Msg = msg
+	return xplac
+}
 
 // Auth module
 
