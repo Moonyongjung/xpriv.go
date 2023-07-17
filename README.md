@@ -1,5 +1,7 @@
 # xpriv.go
 xpriv.go is a Golang SDK for writing applications that interact with the Xpla private blockchain and provides simple abstractions over core data structures, serialization, key management, and API request generation.
+(XPLA private chain is not public yet.)
+
 
 ## Usage
 Usage of modules and xpla client.
