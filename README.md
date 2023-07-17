@@ -7,6 +7,7 @@ Usage of modules and xpla client.
 |Name|Link|Note|
 |:---:|:---:|:---:|
 |Xpla client|[README](./client/README.md)||
+|Anchor|[README](./core/anchor/README.md)||
 |Auth|[README](./core/auth/README.md)||
 |Bank|[README](./core/bank/README.md)||
 |Base|[README](./core/base/README.md)||
