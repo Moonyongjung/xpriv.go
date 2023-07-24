@@ -52,7 +52,9 @@ func MakeQueryAdminMsg() (privtypes.QueryAdminRequest, error) {
 
 // (Query) make msg - participate state
 func MakeParticipateStateMsg(participateStateMsg types.ParticipateStateMsg) (privtypes.QueryParticipateStateRequest, error) {
-	return parseParticipateStateArgs(participateStateMsg)
+	return privtypes.QueryParticipateStateRequest{
+		Did: participateStateMsg.DID,
+	}, nil
 }
 
 // (Query) make msg - gen DID signature

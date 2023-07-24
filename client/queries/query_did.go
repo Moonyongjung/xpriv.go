@@ -34,6 +34,28 @@ func queryByGrpcDID(i IXplaClient) (string, error) {
 			return "", util.LogErr(errors.ErrGrpcRequest, err)
 		}
 
+		// Get moniker by DID
+	case i.Ixplac.GetMsgType() == mdid.DidMonikerByDidMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(didtypes.QueryMonikerByDIDRequest)
+		res, err = queryClient.MonikerByDID(
+			i.Ixplac.GetContext(),
+			&convertMsg,
+		)
+		if err != nil {
+			return "", util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
+		// Get DID by moniker
+	case i.Ixplac.GetMsgType() == mdid.DidDidByMonikerMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(didtypes.QueryDIDByMonikerRequest)
+		res, err = queryClient.DIDByMoniker(
+			i.Ixplac.GetContext(),
+			&convertMsg,
+		)
+		if err != nil {
+			return "", util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())
 	}
@@ -47,7 +69,9 @@ func queryByGrpcDID(i IXplaClient) (string, error) {
 }
 
 const (
-	didGetDIDLabel = "dids"
+	didGetDIDLabel       = "dids"
+	didMonikerByDIDLabel = "moniker_by_did"
+	didDIDByMonikerLabel = "did_by_moniker"
 )
 
 func queryByLcdDID(i IXplaClient) (string, error) {
@@ -57,7 +81,17 @@ func queryByLcdDID(i IXplaClient) (string, error) {
 	// Get DID
 	case i.Ixplac.GetMsgType() == mdid.DidGetDidMsgType:
 		convertMsg, _ := i.Ixplac.GetMsg().(didtypes.QueryDIDRequest)
-		url = url + util.MakeQueryLabels(didGetDIDLabel, convertMsg.DidBase64)
+		url = url + util.MakeQueryLabels(didGetDIDLabel, convertMsg.Did)
+
+		// Get moniker by DID
+	case i.Ixplac.GetMsgType() == mdid.DidMonikerByDidMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(didtypes.QueryMonikerByDIDRequest)
+		url = url + util.MakeQueryLabels(didMonikerByDIDLabel, convertMsg.Did)
+
+		// Get DID by moniker
+	case i.Ixplac.GetMsgType() == mdid.DidDidByMonikerMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(didtypes.QueryDIDByMonikerRequest)
+		url = url + util.MakeQueryLabels(didDIDByMonikerLabel, convertMsg.Moniker)
 
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())

@@ -176,18 +176,6 @@ func parseQuitArgs(quitMsg types.QuitMsg, lcdUrl, grpcUrl string, grpcConn grpc.
 	return privtypes.NewMsgQuit(didKey, didSigBase64, fromAddress.String()), nil
 }
 
-// Parsing - participate state
-func parseParticipateStateArgs(participateStateMsg types.ParticipateStateMsg) (privtypes.QueryParticipateStateRequest, error) {
-	did, err := didtypes.ParseDID(participateStateMsg.DID)
-	if err != nil {
-		return privtypes.QueryParticipateStateRequest{}, util.LogErr(errors.ErrParse, err)
-	}
-
-	return privtypes.QueryParticipateStateRequest{
-		DidBase64: base64.StdEncoding.EncodeToString([]byte(did)),
-	}, nil
-}
-
 // Parsing - gen DID signature
 func parseGenDIDSignArgs(genDIDSignMsg types.GenDIDSignMsg, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context) (string, error) {
 	did, didKey, err := privtypes.ParseDIDKey(genDIDSignMsg.DIDKey)
@@ -217,12 +205,14 @@ func parseIssueVCArgs(issueVCMsg types.IssueVCMsg) (privtypes.QueryIssueVCReques
 		return privtypes.QueryIssueVCRequest{}, util.LogErr(errors.ErrParse, err)
 	}
 
-	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
-	methodKey := privtypes.FromDidKeyToMethodKey(didKey)
+	_, methodKey, err := privtypes.SplitDIDKey(didKey)
+	if err != nil {
+		return privtypes.QueryIssueVCRequest{}, util.LogErr(errors.ErrParse, err)
+	}
 
 	return privtypes.QueryIssueVCRequest{
 		Body: &privtypes.VerifiableBody{
-			DidBase64:    didBase64,
+			Did:          did,
 			DidSigBase64: issueVCMsg.DIDSignBase64,
 			MethodKey:    methodKey,
 		},
@@ -236,12 +226,14 @@ func parseGetVPArgs(getVPMsg types.GetVPMsg) (privtypes.QueryGetVPRequest, error
 		return privtypes.QueryGetVPRequest{}, util.LogErr(errors.ErrParse, err)
 	}
 
-	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
-	methodKey := privtypes.FromDidKeyToMethodKey(didKey)
+	_, methodKey, err := privtypes.SplitDIDKey(didKey)
+	if err != nil {
+		return privtypes.QueryGetVPRequest{}, util.LogErr(errors.ErrParse, err)
+	}
 
 	return privtypes.QueryGetVPRequest{
 		Body: &privtypes.VerifiableBody{
-			DidBase64:    didBase64,
+			Did:          did,
 			DidSigBase64: getVPMsg.DIDSignBase64,
 			MethodKey:    methodKey,
 		},

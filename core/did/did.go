@@ -25,7 +25,28 @@ func MakeDeactivateDIDMsg(deactivateDIDMsg types.DeactivateDIDMsg, lcdUrl, grpcU
 	return parseDeactivateDIDArgs(deactivateDIDMsg, lcdUrl, grpcUrl, grpcConn, privKey, ctx)
 }
 
+// (Tx) make msg - replace DID moniker
+func MakeReplaceDIDMonikerMsg(replaceDIDMonikerMsg types.ReplaceDIDMonikerMsg, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, privKey key.PrivateKey, ctx context.Context) (didtypes.MsgReplaceDIDMoniker, error) {
+	return parseReplaceDIDMonikerArgs(replaceDIDMonikerMsg, lcdUrl, grpcUrl, grpcConn, privKey, ctx)
+}
+
 // (Query) - get DID
 func MakeGetDIDMsg(getDIDMsg types.GetDIDMsg) (didtypes.QueryDIDRequest, error) {
-	return parseGetDIDArgs(getDIDMsg)
+	return didtypes.QueryDIDRequest{
+		Did: getDIDMsg.DIDOrMoniker,
+	}, nil
+}
+
+// (Query) - moniker by DID
+func MakeMonikerByDIDMsg(monikerByDIDMsg types.MonikerByDIDMsg) (didtypes.QueryMonikerByDIDRequest, error) {
+	return didtypes.QueryMonikerByDIDRequest{
+		Did: monikerByDIDMsg.DID,
+	}, nil
+}
+
+// (Query) - did by moniker
+func MakeDIDByMonikerMsg(didByMonikerMsg types.DIDByMonikerMsg) (didtypes.QueryDIDByMonikerRequest, error) {
+	return didtypes.QueryDIDByMonikerRequest{
+		Moniker: didByMonikerMsg.Moniker,
+	}, nil
 }

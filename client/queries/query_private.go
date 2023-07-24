@@ -16,7 +16,6 @@ func (i IXplaClient) QueryPrivate() (string, error) {
 	} else {
 		return queryByLcdPrivate(i)
 	}
-
 }
 
 func queryByGrpcPrivate(i IXplaClient) (string, error) {
@@ -108,7 +107,7 @@ func queryByLcdPrivate(i IXplaClient) (string, error) {
 	case i.Ixplac.GetMsgType() == mpriv.PrivateParticipateStateMsgType:
 		convertMsg, _ := i.Ixplac.GetMsg().(privtypes.QueryParticipateStateRequest)
 
-		url = url + util.MakeQueryLabels(privateParticipateStateLabel, convertMsg.DidBase64)
+		url = url + util.MakeQueryLabels(privateParticipateStateLabel, convertMsg.Did)
 
 		// Gen DID sign
 	case i.Ixplac.GetMsgType() == mpriv.PrivateGenDIDSignMsgType:

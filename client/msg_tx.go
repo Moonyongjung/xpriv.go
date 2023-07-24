@@ -111,6 +111,18 @@ func (xplac *XplaClient) DeactivateDID(deactivateDIDMsg types.DeactivateDIDMsg) 
 	return xplac
 }
 
+// Replace DID moniker
+func (xplac *XplaClient) ReplaceDIDMoniker(replaceDIDMonikerMsg types.ReplaceDIDMonikerMsg) *XplaClient {
+	msg, err := mdid.MakeReplaceDIDMonikerMsg(replaceDIDMonikerMsg, xplac.GetLcdURL(), xplac.GetGrpcUrl(), xplac.GetGrpcClient(), xplac.Opts.PrivateKey, xplac.GetContext())
+	if err != nil {
+		xplac.Err = err
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidReplaceDidMonikerMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
 // Distribution module
 
 // Funds the community pool with the specified amount.

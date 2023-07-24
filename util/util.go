@@ -2,7 +2,6 @@ package util
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"math/big"
 	"strconv"
@@ -89,12 +88,11 @@ func MakeQueryLabels(labels ...string) string {
 }
 
 func GetDIDDocByQueryClient(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context) (didtypes.DIDDocumentWithSeq, error) {
-	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
 	var didRes didtypes.QueryDIDResponse
 	if grpcUrl != "" {
 		didQueryclient := didtypes.NewQueryClient(grpcConn)
 		didQueryMsg := didtypes.QueryDIDRequest{
-			DidBase64: didBase64,
+			Did: did,
 		}
 		res, err := didQueryclient.DID(ctx, &didQueryMsg)
 		if err != nil {
@@ -110,7 +108,7 @@ func GetDIDDocByQueryClient(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientCon
 		}
 
 	} else {
-		url := lcdUrl + "/xpla/did/v1beta1/dids/" + didBase64
+		url := lcdUrl + "/xpla/did/v1beta1/dids/" + did
 
 		out, err := CtxHttpClient("GET", url, nil, ctx)
 		if err != nil {

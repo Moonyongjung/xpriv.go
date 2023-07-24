@@ -2,7 +2,6 @@ package did
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"os"
 
@@ -53,7 +52,7 @@ func parseCreateDIDArgs(createDIDMsg types.CreateDIDMsg, privKey key.PrivateKey)
 		return didtypes.MsgCreateDID{}, util.LogErr(errors.ErrParse, err)
 	}
 
-	msg := didtypes.NewMsgCreateDID(did, doc, verificationMethodID, sig, fromAddress.String())
+	msg := didtypes.NewMsgCreateDID(did, doc, verificationMethodID, createDIDMsg.Moniker, sig, fromAddress.String())
 	if err := msg.ValidateBasic(); err != nil {
 		return didtypes.MsgCreateDID{}, util.LogErr(errors.ErrInvalidRequest, err)
 	}
@@ -150,18 +149,44 @@ func parseDeactivateDIDArgs(deactivateDIDMsg types.DeactivateDIDMsg, lcdUrl, grp
 	return didtypes.NewMsgDeactivateDID(did, verificationMethodID, sign, fromAddress.String()), nil
 }
 
-// Parsing - get DID
-func parseGetDIDArgs(getDIDMsg types.GetDIDMsg) (didtypes.QueryDIDRequest, error) {
-	did, err := didtypes.ParseDID(getDIDMsg.DID)
+// Parsing - replace DID moniker
+func parseReplaceDIDMonikerArgs(replaceDIDMonikerMsg types.ReplaceDIDMonikerMsg, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, privKey key.PrivateKey, ctx context.Context) (didtypes.MsgReplaceDIDMoniker, error) {
+	did, err := didtypes.ParseDID(replaceDIDMonikerMsg.DID)
 	if err != nil {
-		return didtypes.QueryDIDRequest{}, util.LogErr(errors.ErrParse, err)
+		return didtypes.MsgReplaceDIDMoniker{}, util.LogErr(errors.ErrParse, err)
 	}
 
-	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
+	verificationMethodID, err := didtypes.ParseVerificationMethodID(did+"#"+replaceDIDMonikerMsg.KeyId, did)
+	if err != nil {
+		return didtypes.MsgReplaceDIDMoniker{}, util.LogErr(errors.ErrParse, err)
+	}
 
-	return didtypes.QueryDIDRequest{
-		DidBase64: didBase64,
-	}, nil
+	didPrivateKey, err := getPrivKeyFromKeyStore(replaceDIDMonikerMsg.DIDKeyPath, replaceDIDMonikerMsg.DIDPassphrase, verificationMethodID)
+	if err != nil {
+		return didtypes.MsgReplaceDIDMoniker{}, util.LogErr(errors.ErrParse, err)
+	}
+
+	doc := didtypes.DIDDocument{
+		Id: did,
+	}
+
+	didDocumentWithSeq, err := util.GetDIDDocByQueryClient(did, lcdUrl, grpcUrl, grpcConn, ctx)
+	if err != nil {
+		return didtypes.MsgReplaceDIDMoniker{}, util.LogErr(errors.ErrInvalidRequest, err)
+	}
+
+	sign, err := didtypes.Sign(&doc, didDocumentWithSeq.Sequence, didPrivateKey)
+	if err != nil {
+		return didtypes.MsgReplaceDIDMoniker{}, util.LogErr(errors.ErrParse, err)
+	}
+
+	fromAddress, err := util.GetAddrByPrivKey(privKey)
+	if err != nil {
+		return didtypes.MsgReplaceDIDMoniker{}, util.LogErr(errors.ErrParse, err)
+	}
+
+	return didtypes.NewMsgReplaceDIDMoniker(did, verificationMethodID, replaceDIDMonikerMsg.NewMoniker, sign, fromAddress.String()), nil
+
 }
 
 func readDIDDocFrom(path string) (didtypes.DIDDocument, error) {
@@ -197,33 +222,3 @@ func getPrivKeyFromKeyStore(didKeyPath, didPassphrase string, verificationMethod
 
 	return xcrypto.PrivKeyFromBytes(didPrivKeyBytes)
 }
-
-// func signUsingCurrentSeq(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context, didPrivKey secp256k1.PrivKey, doc didtypes.DIDDocument) ([]byte, error) {
-// 	didBase64 := base64.StdEncoding.EncodeToString([]byte(did))
-// 	var didRes didtypes.QueryDIDResponse
-// 	if grpcUrl != "" {
-// 		queryClient := didtypes.NewQueryClient(grpcConn)
-// 		res, err := queryClient.DID(
-// 			ctx,
-// 			&didtypes.QueryDIDRequest{
-// 				DidBase64: didBase64,
-// 			},
-// 		)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-
-// 		didRes = *res
-
-// 	} else {
-// 		url := lcdUrl + "/xpla/did/v1beta1/dids/" + didBase64
-
-// 		out, err := util.CtxHttpClient("GET", url, nil, ctx)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		json.Unmarshal(out, &didRes)
-// 	}
-
-// 	return didtypes.Sign(&doc, didRes.DidDocumentWithSeq.Sequence, didPrivKey)
-// }

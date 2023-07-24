@@ -88,6 +88,10 @@ func setTxBuilderMsg(xplac *XplaClient) (cmclient.TxBuilder, error) {
 		convertMsg, _ := xplac.Msg.(didtypes.MsgDeactivateDID)
 		builder.SetMsgs(&convertMsg)
 
+	} else if xplac.MsgType == mdid.DidReplaceDidMonikerMsgType {
+		convertMsg, _ := xplac.Msg.(didtypes.MsgReplaceDIDMoniker)
+		builder.SetMsgs(&convertMsg)
+
 		// Distribution module
 	} else if xplac.MsgType == mdist.DistributionFundCommunityPoolMsgType {
 		convertMsg, _ := xplac.Msg.(disttypes.MsgFundCommunityPool)

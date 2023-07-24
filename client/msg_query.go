@@ -357,6 +357,32 @@ func (xplac *XplaClient) GetDID(getDIDMsg types.GetDIDMsg) *XplaClient {
 	return xplac
 }
 
+// Query moniker by DID.
+func (xplac *XplaClient) MonikerByDID(monikerByDIDMsg types.MonikerByDIDMsg) *XplaClient {
+	msg, err := mdid.MakeMonikerByDIDMsg(monikerByDIDMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidMonikerByDidMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
+// Query DID by moniker.
+func (xplac *XplaClient) DIDByMoniker(didByMonikerMsg types.DIDByMonikerMsg) *XplaClient {
+	msg, err := mdid.MakeDIDByMonikerMsg(didByMonikerMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidDidByMonikerMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
 // Distribution module
 
 // Query distribution parameters.

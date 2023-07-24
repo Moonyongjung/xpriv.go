@@ -11,6 +11,8 @@ createDIDMsg := types.CreateDIDMsg{
     DIDMnemonic:    "catalog appear keep human ...",
     DIDPassphrase:  "passphrase",
     SaveDIDKeyPath: "/DID/KEY/DIRECTORY",
+    // moniker is option
+    Moniker:        "didMoniker",
 }
 
 txbytes, err := xplac.CreateDID(createDIDMsg).CreateAndSignTx()
@@ -46,6 +48,21 @@ txbytes, err := xplac.DeactivateDID(deactivateDIDMsg).CreateAndSignTx()
 res, err := xplac.Broadcast(txbytes)
 ```
 
+### (Tx) Replace DID Moniker
+```go
+// Replace DID moniker
+replaceDIDMonikerMsg := types.ReplaceDIDMonikerMsg{
+    DID:           "did:xpla:mM54wt4G3KBJaJSXEfFv87BuxRHQ2K9WS3m7crFReCL",
+    KeyId:         "key1",
+    DIDPassphrase: "passphrase",
+    DIDKeyPath:    "DID/KEY/DIRECTORY",
+    NewMoniker:    "newDidMoniker",
+}
+
+txbytes, err := xplac.ReplaceDIDMoniker(replaceDIDMonikerMsg).CreateAndSignTx()
+res, err := xplac.Broadcast(txbytes)
+```
+
 ### (Query) Get DID info
 ```go
 // Get DID info
@@ -53,7 +70,26 @@ getDIDMsg := types.GetDIDMsg{
     DID: "did:xpla:mM54wt4G3KBJaJSXEfFv87BuxRHQ2K9WS3m7crFReCL",
 }
 
-res, err = xplac.GetDID(getDIDMsg).Query()
+res, err := xplac.GetDID(getDIDMsg).Query()
 ```
 
+### (Query) Moniker by DID
+```go
+// Get moniker by DID
+monikerByDIDMsg := types.MonikerByDIDMsg{
+    DID: "did:xpla:mM54wt4G3KBJaJSXEfFv87BuxRHQ2K9WS3m7crFReCL",
+}
+
+res, err := xplac.MonikerByDID(monikerByDIDMsg).Query()
+```
+
+### (Query) DID by moniker
+```go
+// Get DID by moniker
+didByMonikerMsg := types.DIDByMonikerMsg{
+    Moniker: "didMoniker",
+}
+
+res, err := xplac.DIDByMoniker(didByMonikerMsg).Query()
+```
 

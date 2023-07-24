@@ -4,6 +4,7 @@ type CreateDIDMsg struct {
 	DIDMnemonic    string
 	DIDPassphrase  string
 	SaveDIDKeyPath string
+	Moniker        string
 }
 
 type UpdateDIDMsg struct {
@@ -21,6 +22,22 @@ type DeactivateDIDMsg struct {
 	DIDKeyPath    string
 }
 
+type ReplaceDIDMonikerMsg struct {
+	DID           string
+	KeyId         string
+	DIDPassphrase string
+	DIDKeyPath    string
+	NewMoniker    string
+}
+
 type GetDIDMsg struct {
+	DIDOrMoniker string
+}
+
+type MonikerByDIDMsg struct {
 	DID string
+}
+
+type DIDByMonikerMsg struct {
+	Moniker string
 }
