@@ -93,3 +93,8 @@ didByMonikerMsg := types.DIDByMonikerMsg{
 res, err := xplac.DIDByMoniker(didByMonikerMsg).Query()
 ```
 
+### (Query) Get All DIDs 
+```go
+// Get all DIDs are activated
+res, err := xplac.AllDIDs().Query()
+```
