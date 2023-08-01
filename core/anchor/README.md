@@ -94,3 +94,9 @@ anchorBalancesMsg := types.AnchorBalancesMsg{
 
 res, err = xplac.AnchorBalances(anchorBalancesMsg).Query()
 ```
+
+### (Query) Params
+```go
+// Get params of anchor module
+res, err := xplac.AnchorParams().Query()
+```

@@ -66,3 +66,8 @@ func MakeAnchorBalancesMsg(anchorBalancesMsg types.AnchorBalancesMsg) (anchortyp
 		ValidatorAddress: anchorBalancesMsg.ValidatorAddr,
 	}, nil
 }
+
+// (Query) make msg - params of anchor module
+func MakeAnchorParamsMsg() (anchortypes.QueryParamsRequest, error) {
+	return anchortypes.QueryParamsRequest{}, nil
+}

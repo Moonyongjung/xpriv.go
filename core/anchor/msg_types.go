@@ -11,4 +11,5 @@ const (
 	AnchorAnchorTxBodyMsgType        = "anchor-tx-body"
 	AnchorVerifyMsgType              = "verify"
 	AnchorAnchorBalancesMsgType      = "anchor-balances"
+	AnchorParamsMsgType              = "params"
 )

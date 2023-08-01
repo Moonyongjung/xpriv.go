@@ -116,6 +116,19 @@ func (xplac *XplaClient) AnchorBalances(anchorBalancesMsg types.AnchorBalancesMs
 	return xplac
 }
 
+// Query params of anchor module
+func (xplac *XplaClient) AnchorParams() *XplaClient {
+	msg, err := manchor.MakeAnchorParamsMsg()
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = manchor.AnchorModule
+	xplac.MsgType = manchor.AnchorParamsMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
 // Auth module
 
 // Query the current auth parameters.

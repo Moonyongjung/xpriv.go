@@ -100,6 +100,17 @@ func queryByGrpcAnchor(i IXplaClient) (string, error) {
 			return "", util.LogErr(errors.ErrGrpcRequest, err)
 		}
 
+		// params
+	case i.Ixplac.GetMsgType() == manchor.AnchorParamsMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(anchortypes.QueryParamsRequest)
+		res, err = queryClient.Params(
+			i.Ixplac.GetContext(),
+			&convertMsg,
+		)
+		if err != nil {
+			return "", util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())
 	}
@@ -120,6 +131,7 @@ const (
 	anchorAnchorTxBodyLabel        = "anchor_tx_body"
 	anchorVerifyLabel              = "verify"
 	anchorAnchorBalancesLabel      = "anchor_balances"
+	anchorParamsLabel              = "params"
 )
 
 func queryByLcdAnchor(i IXplaClient) (string, error) {
@@ -159,6 +171,10 @@ func queryByLcdAnchor(i IXplaClient) (string, error) {
 	case i.Ixplac.GetMsgType() == manchor.AnchorAnchorBalancesMsgType:
 		convertMsg, _ := i.Ixplac.GetMsg().(anchortypes.QueryAnchorBalancesRequest)
 		url = url + util.MakeQueryLabels(anchorAnchorBalancesLabel, convertMsg.ValidatorAddress)
+
+		// anchor params
+	case i.Ixplac.GetMsgType() == manchor.AnchorParamsMsgType:
+		url = url + util.MakeQueryLabels(anchorParamsLabel)
 
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())
