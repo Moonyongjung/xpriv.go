@@ -3,6 +3,7 @@ package did
 import (
 	"context"
 
+	"github.com/Moonyongjung/xpriv.go/core"
 	"github.com/Moonyongjung/xpriv.go/key"
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/gogo/protobuf/grpc"
@@ -48,5 +49,12 @@ func MakeMonikerByDIDMsg(monikerByDIDMsg types.MonikerByDIDMsg) (didtypes.QueryM
 func MakeDIDByMonikerMsg(didByMonikerMsg types.DIDByMonikerMsg) (didtypes.QueryDIDByMonikerRequest, error) {
 	return didtypes.QueryDIDByMonikerRequest{
 		Moniker: didByMonikerMsg.Moniker,
+	}, nil
+}
+
+// (Query) - all dids
+func MakeAllDIDsMsg() (didtypes.QueryAllDIDsRequest, error) {
+	return didtypes.QueryAllDIDsRequest{
+		Pagination: core.PageRequest,
 	}, nil
 }

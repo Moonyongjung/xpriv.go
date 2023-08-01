@@ -56,6 +56,17 @@ func queryByGrpcDID(i IXplaClient) (string, error) {
 			return "", util.LogErr(errors.ErrGrpcRequest, err)
 		}
 
+		// Get all DIDs
+	case i.Ixplac.GetMsgType() == mdid.DidAllDidsMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(didtypes.QueryAllDIDsRequest)
+		res, err = queryClient.AllDIDs(
+			i.Ixplac.GetContext(),
+			&convertMsg,
+		)
+		if err != nil {
+			return "", util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())
 	}
@@ -69,9 +80,10 @@ func queryByGrpcDID(i IXplaClient) (string, error) {
 }
 
 const (
-	didGetDIDLabel       = "dids"
+	didGetDIDLabel       = "get_did"
 	didMonikerByDIDLabel = "moniker_by_did"
 	didDIDByMonikerLabel = "did_by_moniker"
+	didAllDIDsLabel      = "all_dids"
 )
 
 func queryByLcdDID(i IXplaClient) (string, error) {
@@ -92,6 +104,10 @@ func queryByLcdDID(i IXplaClient) (string, error) {
 	case i.Ixplac.GetMsgType() == mdid.DidDidByMonikerMsgType:
 		convertMsg, _ := i.Ixplac.GetMsg().(didtypes.QueryDIDByMonikerRequest)
 		url = url + util.MakeQueryLabels(didDIDByMonikerLabel, convertMsg.Moniker)
+
+		// Get all DIDs
+	case i.Ixplac.GetMsgType() == mdid.DidAllDidsMsgType:
+		url = url + util.MakeQueryLabels(didAllDIDsLabel)
 
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())

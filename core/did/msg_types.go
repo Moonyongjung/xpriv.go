@@ -9,4 +9,5 @@ const (
 	DidGetDidMsgType            = "get-did"
 	DidMonikerByDidMsgType      = "moniker-by-did"
 	DidDidByMonikerMsgType      = "did-by-moniker"
+	DidAllDidsMsgType           = "all-dids"
 )

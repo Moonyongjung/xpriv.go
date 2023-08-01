@@ -383,6 +383,19 @@ func (xplac *XplaClient) DIDByMoniker(didByMonikerMsg types.DIDByMonikerMsg) *Xp
 	return xplac
 }
 
+// Query all DIDs are activated.
+func (xplac *XplaClient) AllDIDs() *XplaClient {
+	msg, err := mdid.MakeAllDIDsMsg()
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mdid.DidModule
+	xplac.MsgType = mdid.DidAllDidsMsgType
+	xplac.Msg = msg
+	return xplac
+}
+
 // Distribution module
 
 // Query distribution parameters.
