@@ -46,6 +46,10 @@ type ParticipateStateMsg struct {
 	DID string
 }
 
+type ParticipateSequenceMsg struct {
+	DID string
+}
+
 type GenDIDSignMsg struct {
 	DIDKey        string
 	DIDPassphrase string

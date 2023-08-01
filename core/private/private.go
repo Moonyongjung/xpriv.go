@@ -3,6 +3,7 @@ package private
 import (
 	"context"
 
+	"github.com/Moonyongjung/xpriv.go/core"
 	"github.com/Moonyongjung/xpriv.go/key"
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/gogo/protobuf/grpc"
@@ -57,6 +58,13 @@ func MakeParticipateStateMsg(participateStateMsg types.ParticipateStateMsg) (pri
 	}, nil
 }
 
+// (Query) make msg - participate sequence
+func MakeParticipateSequenceMsg(participateSequenceMsg types.ParticipateSequenceMsg) (privtypes.QueryParticipateSequenceRequest, error) {
+	return privtypes.QueryParticipateSequenceRequest{
+		Did: participateSequenceMsg.DID,
+	}, nil
+}
+
 // (Query) make msg - gen DID signature
 func MakeGenDIDSignMsg(genDIDSignMsg types.GenDIDSignMsg, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context) (string, error) {
 	return parseGenDIDSignArgs(genDIDSignMsg, lcdUrl, grpcUrl, grpcConn, ctx)
@@ -70,4 +78,18 @@ func MakeIssueVCMsg(issueVCMsg types.IssueVCMsg) (privtypes.QueryIssueVCRequest,
 // (Query) make msg - get vp
 func MakeGetVPMsg(getVPMsg types.GetVPMsg) (privtypes.QueryGetVPRequest, error) {
 	return parseGetVPArgs(getVPMsg)
+}
+
+// (Query) make msg - all under reviews
+func MakeAllUnderReviewsMsg() (privtypes.QueryAllUnderReviewsRequest, error) {
+	return privtypes.QueryAllUnderReviewsRequest{
+		Pagination: core.PageRequest,
+	}, nil
+}
+
+// (Query) make msg - all participants
+func MakeAllParticipantsMsg() (privtypes.QueryAllParticipantsRequest, error) {
+	return privtypes.QueryAllParticipantsRequest{
+		Pagination: core.PageRequest,
+	}, nil
 }

@@ -1106,6 +1106,20 @@ func (xplac *XplaClient) ParticipateState(participateStateMsg types.ParticipateS
 	return xplac
 }
 
+// Query participate sequence of the DID.
+func (xplac *XplaClient) ParticipateSequence(participateSequenceMsg types.ParticipateSequenceMsg) *XplaClient {
+	msg, err := mpriv.MakeParticipateSequenceMsg(participateSequenceMsg)
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateParticipateSequenceMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
 // Gen the DID signature from DID key.
 func (xplac *XplaClient) GenDIDSign(genDIDSignMsg types.GenDIDSignMsg) *XplaClient {
 	msg, err := mpriv.MakeGenDIDSignMsg(genDIDSignMsg, xplac.GetLcdURL(), xplac.GetGrpcUrl(), xplac.GetGrpcClient(), xplac.GetContext())
@@ -1146,6 +1160,34 @@ func (xplac *XplaClient) GetVP(getVPMsg types.GetVPMsg) *XplaClient {
 	}
 	xplac.Module = mpriv.PrivateModule
 	xplac.MsgType = mpriv.PrivateGetVPMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
+// Query to check all participate state under review
+func (xplac *XplaClient) AllUnderReviews() *XplaClient {
+	msg, err := mpriv.MakeAllUnderReviewsMsg()
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateAllUnderReviewsMsgType
+	xplac.Msg = msg
+
+	return xplac
+}
+
+// Query all participants
+func (xplac *XplaClient) AllParticipants() *XplaClient {
+	msg, err := mpriv.MakeAllParticipantsMsg()
+	if err != nil {
+		xplac.Err = err
+		return xplac
+	}
+	xplac.Module = mpriv.PrivateModule
+	xplac.MsgType = mpriv.PrivateAllParticipantsMsgType
 	xplac.Msg = msg
 
 	return xplac

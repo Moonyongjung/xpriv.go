@@ -44,6 +44,17 @@ func queryByGrpcPrivate(i IXplaClient) (string, error) {
 			return "", util.LogErr(errors.ErrGrpcRequest, err)
 		}
 
+		// Particpate sequence of the DID
+	case i.Ixplac.GetMsgType() == mpriv.PrivateParticipateSequenceMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(privtypes.QueryParticipateSequenceRequest)
+		res, err = queryClient.ParticipateSequence(
+			i.Ixplac.GetContext(),
+			&convertMsg,
+		)
+		if err != nil {
+			return "", util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
 		// Gen DID signature
 	case i.Ixplac.GetMsgType() == mpriv.PrivateGenDIDSignMsgType:
 		convertMsg, _ := i.Ixplac.GetMsg().(string)
@@ -76,6 +87,29 @@ func queryByGrpcPrivate(i IXplaClient) (string, error) {
 		if err != nil {
 			return "", util.LogErr(errors.ErrGrpcRequest, err)
 		}
+
+		// All under reviews
+	case i.Ixplac.GetMsgType() == mpriv.PrivateAllUnderReviewsMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(privtypes.QueryAllUnderReviewsRequest)
+		res, err = queryClient.AllUnderReviews(
+			i.Ixplac.GetContext(),
+			&convertMsg,
+		)
+		if err != nil {
+			return "", util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
+		// All participants
+	case i.Ixplac.GetMsgType() == mpriv.PrivateAllParticipantsMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(privtypes.QueryAllParticipantsRequest)
+		res, err = queryClient.AllParticipants(
+			i.Ixplac.GetContext(),
+			&convertMsg,
+		)
+		if err != nil {
+			return "", util.LogErr(errors.ErrGrpcRequest, err)
+		}
+
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())
 	}
@@ -89,10 +123,13 @@ func queryByGrpcPrivate(i IXplaClient) (string, error) {
 }
 
 const (
-	privateAdminLabel            = "admin"
-	privateParticipateStateLabel = "participate_state"
-	privateIssueVCLabel          = "issue_vc"
-	privateGetVPLabel            = "get_vp"
+	privateAdminLabel               = "admin"
+	privateParticipateStateLabel    = "participate_state"
+	privateParticipateSequenceLabel = "participate_sequence"
+	privateIssueVCLabel             = "issue_vc"
+	privateGetVPLabel               = "get_vp"
+	privateAllUnderReviewsLabel     = "all_under_reviews"
+	privateAllParticipantsLabel     = "all_participants"
 )
 
 func queryByLcdPrivate(i IXplaClient) (string, error) {
@@ -108,6 +145,12 @@ func queryByLcdPrivate(i IXplaClient) (string, error) {
 		convertMsg, _ := i.Ixplac.GetMsg().(privtypes.QueryParticipateStateRequest)
 
 		url = url + util.MakeQueryLabels(privateParticipateStateLabel, convertMsg.Did)
+
+		// Participate sequence of the DID
+	case i.Ixplac.GetMsgType() == mpriv.PrivateParticipateSequenceMsgType:
+		convertMsg, _ := i.Ixplac.GetMsg().(privtypes.QueryParticipateSequenceRequest)
+
+		url = url + util.MakeQueryLabels(privateParticipateSequenceLabel, convertMsg.Did)
 
 		// Gen DID sign
 	case i.Ixplac.GetMsgType() == mpriv.PrivateGenDIDSignMsgType:
@@ -150,6 +193,14 @@ func queryByLcdPrivate(i IXplaClient) (string, error) {
 		}
 
 		return string(out), nil
+
+		// all under reviews
+	case i.Ixplac.GetMsgType() == mpriv.PrivateAllUnderReviewsMsgType:
+		url = url + util.MakeQueryLabels(privateAllUnderReviewsLabel)
+
+		// all participants
+	case i.Ixplac.GetMsgType() == mpriv.PrivateAllParticipantsMsgType:
+		url = url + util.MakeQueryLabels(privateAllParticipantsLabel)
 
 	default:
 		return "", util.LogErr(errors.ErrInvalidMsgType, i.Ixplac.GetMsgType())
