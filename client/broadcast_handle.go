@@ -1,15 +1,14 @@
 package client
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"time"
 
+	"github.com/Moonyongjung/xpla-private-chain/serve/middleware"
 	mevm "github.com/Moonyongjung/xpriv.go/core/evm"
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/Moonyongjung/xpriv.go/types/errors"
 	"github.com/Moonyongjung/xpriv.go/util"
-	"google.golang.org/grpc/metadata"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -28,7 +27,17 @@ func broadcastTx(xplac *XplaClient, txBytes []byte, mode txtypes.BroadcastMode) 
 	}
 
 	if xplac.Opts.GrpcURL == "" {
-		reqBytes, err := json.Marshal(broadcastReq)
+		vpByte := xplac.GetVPByte()
+		var pAuth middleware.PrivateAuth
+		json.Unmarshal(vpByte, &pAuth)
+
+		privateBroadcastReq := middleware.TxBroadcastMessage{
+			TxBytes:     txBytes,
+			Mode:        mode,
+			PrivateAuth: pAuth,
+		}
+
+		reqBytes, err := json.Marshal(privateBroadcastReq)
 		if err != nil {
 			return nil, util.LogErr(errors.ErrFailedToMarshal, err)
 		}
@@ -51,14 +60,7 @@ func broadcastTx(xplac *XplaClient, txBytes []byte, mode txtypes.BroadcastMode) 
 
 		xplaTxRes.Response = txResponse
 	} else {
-		if xplac.GetVPByte() != nil {
-			base64VP := base64.StdEncoding.EncodeToString(xplac.GetVPByte())
-
-			privateGrpcHeader := metadata.New(map[string]string{"x-vp": base64VP})
-			newContext := metadata.NewOutgoingContext(xplac.GetContext(), privateGrpcHeader)
-			xplac.WithContext(newContext)
-		}
-
+		xplac = VPInputGrpcContext(xplac)
 		txClient := txtypes.NewServiceClient(xplac.Grpc)
 		txResponse, err := txClient.BroadcastTx(xplac.Context, &broadcastReq)
 		if err != nil {

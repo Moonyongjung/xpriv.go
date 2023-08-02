@@ -2,6 +2,7 @@ package client
 
 import (
 	"crypto/ecdsa"
+	"encoding/base64"
 	"math/big"
 	"os"
 
@@ -22,6 +23,7 @@ import (
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/Moonyongjung/xpriv.go/types/errors"
 	"github.com/Moonyongjung/xpriv.go/util"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	anchortypes "github.com/Moonyongjung/xpla-private-chain/x/anchor/types"
@@ -441,4 +443,16 @@ func getGasLimitFeeAmount(xplac *XplaClient, builder cmclient.TxBuilder) (string
 	}
 
 	return gasLimit, feeAmount, nil
+}
+
+func VPInputGrpcContext(xplac *XplaClient) *XplaClient {
+	if xplac.GetVPByte() != nil {
+		base64VP := base64.StdEncoding.EncodeToString(xplac.GetVPByte())
+
+		privateGrpcHeader := metadata.New(map[string]string{"x-vp": base64VP})
+		newContext := metadata.NewOutgoingContext(xplac.GetContext(), privateGrpcHeader)
+		xplac.WithContext(newContext)
+	}
+
+	return xplac
 }

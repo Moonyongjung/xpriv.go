@@ -1,6 +1,9 @@
 package client
 
 import (
+	"encoding/json"
+
+	"github.com/Moonyongjung/xpla-private-chain/serve/middleware"
 	"github.com/Moonyongjung/xpriv.go/types/errors"
 	"github.com/Moonyongjung/xpriv.go/util"
 
@@ -23,7 +26,7 @@ func (xplac *XplaClient) LoadAccount(address sdk.AccAddress) (res authtypes.Acco
 
 	if xplac.Opts.GrpcURL == "" {
 
-		out, err := util.CtxHttpClient("GET", xplac.Opts.LcdURL+userInfoUrl+address.String(), nil, xplac.Context)
+		out, err := util.CtxHttpClient("POST", xplac.Opts.LcdURL+userInfoUrl+address.String(), xplac.GetVPByte(), xplac.Context)
 		if err != nil {
 			return nil, err
 		}
@@ -36,6 +39,7 @@ func (xplac *XplaClient) LoadAccount(address sdk.AccAddress) (res authtypes.Acco
 		return response.Account.GetCachedValue().(authtypes.AccountI), nil
 
 	} else {
+		xplac = VPInputGrpcContext(xplac)
 		queryClient := authtypes.NewQueryClient(xplac.Grpc)
 		queryAccountRequest := authtypes.QueryAccountRequest{
 			Address: address.String(),
@@ -77,9 +81,15 @@ func (xplac *XplaClient) Simulate(txbuilder cmclient.TxBuilder) (*sdktx.Simulate
 	}
 
 	if xplac.Opts.GrpcURL == "" {
-		reqBytes, err := xplac.EncodingConfig.Marshaler.MarshalJSON(&sdktx.SimulateRequest{
-			TxBytes: txBytes,
-		})
+		vpByte := xplac.GetVPByte()
+		var pAuth middleware.PrivateAuth
+		json.Unmarshal(vpByte, &pAuth)
+
+		simulateRequest := middleware.TxSimulateMessage{
+			TxBytes:     txBytes,
+			PrivateAuth: pAuth,
+		}
+		reqBytes, err := json.Marshal(&simulateRequest)
 		if err != nil {
 			return nil, util.LogErr(errors.ErrFailedToMarshal, err)
 		}
@@ -97,6 +107,7 @@ func (xplac *XplaClient) Simulate(txbuilder cmclient.TxBuilder) (*sdktx.Simulate
 
 		return &response, nil
 	} else {
+		xplac = VPInputGrpcContext(xplac)
 		serviceClient := sdktx.NewServiceClient(xplac.Grpc)
 		simulateRequest := sdktx.SimulateRequest{
 			TxBytes: txBytes,

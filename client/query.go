@@ -1,8 +1,6 @@
 package client
 
 import (
-	"encoding/base64"
-
 	"github.com/Moonyongjung/xpriv.go/client/queries"
 	manchor "github.com/Moonyongjung/xpriv.go/core/anchor"
 	mauth "github.com/Moonyongjung/xpriv.go/core/auth"
@@ -24,7 +22,6 @@ import (
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/Moonyongjung/xpriv.go/types/errors"
 	"github.com/Moonyongjung/xpriv.go/util"
-	"google.golang.org/grpc/metadata"
 )
 
 // Query transactions and xpla blockchain information.
@@ -47,15 +44,7 @@ func (xplac *XplaClient) Query() (string, error) {
 	}
 
 	qt := setQueryType(xplac)
-
-	if xplac.GetVPByte() != nil {
-		base64VP := base64.StdEncoding.EncodeToString(xplac.GetVPByte())
-
-		privateGrpcHeader := metadata.New(map[string]string{"x-vp": base64VP})
-		newContext := metadata.NewOutgoingContext(xplac.GetContext(), privateGrpcHeader)
-		xplac.WithContext(newContext)
-	}
-
+	xplac = VPInputGrpcContext(xplac)
 	ixplaClient := queries.NewIXplaClient(xplac, qt)
 
 	if xplac.Module == manchor.AnchorModule {
