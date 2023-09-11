@@ -1,17 +1,17 @@
 {
-    "signatures": [
+    "signatures":[
         {
-            "public_key": {
-                "@type": "/ethermint.crypto.v1.ethsecp256k1.PubKey",
-                "key": "A0+OzBmsWNhswBddqwskpBGD5GBJtfC9dXIwg6aAl50D"
+            "public_key":{
+                "@type":"/ethermint.crypto.v1.ethsecp256k1.PubKey",
+                "key":"A0+OzBmsWNhswBddqwskpBGD5GBJtfC9dXIwg6aAl50D"
             },
-            "data": {
-                "single": {
-                    "mode": "SIGN_MODE_DIRECT",
-                    "signature": "ToXxB/es9Iug8erbCYRDA3/yob3984yF5v8R90WRotktCsppefn49y+tejVirvnxg3AW/rsKJUXBcfyNq00GtQE="
+            "data":{
+                "single":{
+                    "mode":"SIGN_MODE_DIRECT",
+                    "signature":"l3abFnXUJZFxUtf07yead7eGQRgsx+mdbMfGHFO/UuJ76h4vnUZbTU0oe+aiqXvmyC+VVYFnEqioA7C4FSfDUwE="
                 }
             },
-            "sequence": "0"
+            "sequence":"0"
         }
     ]
 }

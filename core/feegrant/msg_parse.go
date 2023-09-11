@@ -54,7 +54,10 @@ func parseFeeGrantArgs(feeGrantMsg types.FeeGrantMsg, privKey key.PrivateKey) (f
 	var grant feegrant.FeeAllowanceI
 	grant = &basic
 
-	periodClock := util.FromStringToInt64(feeGrantMsg.Period)
+	periodClock, err := util.FromStringToInt64(feeGrantMsg.Period)
+	if err != nil {
+		return feegrant.MsgGrantAllowance{}, util.LogErr(errors.ErrParse, err)
+	}
 
 	if periodClock > 0 || feeGrantMsg.PeriodLimit != "" {
 		periodLimit, err := sdk.ParseCoinsNormalized(util.DenomAdd(feeGrantMsg.PeriodLimit))

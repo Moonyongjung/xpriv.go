@@ -2,7 +2,6 @@ package distribution
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/Moonyongjung/xpriv.go/core"
 	"github.com/Moonyongjung/xpriv.go/key"
@@ -108,39 +107,20 @@ func parseWithdrawRewardsArgs(withdrawRewardsMsg types.WithdrawRewardsMsg, privK
 }
 
 // Parsing - withdraw all rewards
-func parseWithdrawAllRewardsArgs(privKey key.PrivateKey, lcdUrl, grpcUrl string, grpcConn grpc.ClientConn, ctx context.Context) ([]sdk.Msg, error) {
+func parseWithdrawAllRewardsArgs(privKey key.PrivateKey, grpcConn grpc.ClientConn, ctx context.Context) ([]sdk.Msg, error) {
 	delAddr, err := util.GetAddrByPrivKey(privKey)
 	if err != nil {
 		return nil, util.LogErr(errors.ErrParse, err)
 	}
-
-	var delValsRes *disttypes.QueryDelegatorValidatorsResponse
-	if grpcUrl != "" {
-		queryClient := disttypes.NewQueryClient(grpcConn)
-		delValsRes, err = queryClient.DelegatorValidators(
-			ctx,
-			&disttypes.QueryDelegatorValidatorsRequest{
-				DelegatorAddress: delAddr.String(),
-			},
-		)
-		if err != nil {
-			return nil, util.LogErr(errors.ErrGrpcRequest, err)
-		}
-
-	} else {
-		url := lcdUrl + "/cosmos/distribution/v1beta1/delegators/" + delAddr.String() + "/validators"
-
-		out, err := util.CtxHttpClient("GET", url, nil, ctx)
-		if err != nil {
-			return nil, util.LogErr(errors.ErrHttpRequest, err)
-		}
-
-		err = delValsRes.Unmarshal(out)
-		if err != nil {
-			return nil, util.LogErr(errors.ErrHttpRequest, err)
-		}
-
-		json.Unmarshal(out, delValsRes)
+	queryClient := disttypes.NewQueryClient(grpcConn)
+	delValsRes, err := queryClient.DelegatorValidators(
+		ctx,
+		&disttypes.QueryDelegatorValidatorsRequest{
+			DelegatorAddress: delAddr.String(),
+		},
+	)
+	if err != nil {
+		return nil, util.LogErr(errors.ErrGrpcRequest, err)
 	}
 
 	vals := delValsRes.Validators
@@ -162,7 +142,7 @@ func parseWithdrawAllRewardsArgs(privKey key.PrivateKey, lcdUrl, grpcUrl string,
 }
 
 // Parsing - set withdraw addr
-func parseSetWithdrawAddrArgs(setWithdrawAddrMsg types.SetwithdrawAddrMsg, privKey key.PrivateKey) (disttypes.MsgSetWithdrawAddress, error) {
+func parseSetWithdrawAddrArgs(setWithdrawAddrMsg types.SetWithdrawAddrMsg, privKey key.PrivateKey) (disttypes.MsgSetWithdrawAddress, error) {
 	delAddr, err := util.GetAddrByPrivKey(privKey)
 	if err != nil {
 		return disttypes.MsgSetWithdrawAddress{}, util.LogErr(errors.ErrParse, err)
@@ -207,8 +187,14 @@ func parseDistSlashesArgs(queryDistSlashesMsg types.QueryDistSlashesMsg) (distty
 	if err != nil {
 		return disttypes.QueryValidatorSlashesRequest{}, util.LogErr(errors.ErrParse, err)
 	}
-	startHeightNumber := util.FromStringToUint64(queryDistSlashesMsg.StartHeight)
-	endHeightNumber := util.FromStringToUint64(queryDistSlashesMsg.EndHeight)
+	startHeightNumber, err := util.FromStringToUint64(queryDistSlashesMsg.StartHeight)
+	if err != nil {
+		return disttypes.QueryValidatorSlashesRequest{}, util.LogErr(errors.ErrParse, err)
+	}
+	endHeightNumber, err := util.FromStringToUint64(queryDistSlashesMsg.EndHeight)
+	if err != nil {
+		return disttypes.QueryValidatorSlashesRequest{}, util.LogErr(errors.ErrParse, err)
+	}
 
 	pageReq := core.PageRequest
 

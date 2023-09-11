@@ -219,10 +219,14 @@ func parseMigrateArgs(migrateMsg types.MigrateMsg, privKey key.PrivateKey) (wasm
 		return wasmtypes.MsgMigrateContract{}, util.LogErr(errors.ErrParse, err)
 	}
 
+	codeIdU64, err := util.FromStringToUint64(migrateMsg.CodeId)
+	if err != nil {
+		return wasmtypes.MsgMigrateContract{}, util.LogErr(errors.ErrParse, err)
+	}
 	return wasmtypes.MsgMigrateContract{
 		Sender:   sender.String(),
 		Contract: migrateMsg.ContractAddress,
-		CodeID:   util.FromStringToUint64(migrateMsg.CodeId),
+		CodeID:   codeIdU64,
 		Msg:      []byte(migrateMsg.MigrateMsg),
 	}, nil
 }

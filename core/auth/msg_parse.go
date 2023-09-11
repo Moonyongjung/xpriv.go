@@ -52,10 +52,19 @@ func parseTxsByEventsArgs(txsByEventsMsg types.QueryTxsByEventsMsg) (QueryTxsByE
 		tmEvents = append(tmEvents, event)
 	}
 
+	pageInt, err := util.FromStringToInt(txsByEventsMsg.Page)
+	if err != nil {
+		return QueryTxsByEventParseMsg{}, err
+	}
+	limitInt, err := util.FromStringToInt(txsByEventsMsg.Limit)
+	if err != nil {
+		return QueryTxsByEventParseMsg{}, err
+	}
+
 	queryTxsByEventParseMsg := QueryTxsByEventParseMsg{
 		TmEvents: tmEvents,
-		Page:     util.FromStringToInt(txsByEventsMsg.Page),
-		Limit:    util.FromStringToInt(txsByEventsMsg.Limit),
+		Page:     pageInt,
+		Limit:    limitInt,
 	}
 
 	return queryTxsByEventParseMsg, nil

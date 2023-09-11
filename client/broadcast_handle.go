@@ -19,14 +19,13 @@ import (
 // Broadcast generated transactions.
 // Broadcast responses, excluding evm, are delivered as "TxResponse" of the entire response structure of the xpla client.
 // Support broadcast by using LCD and gRPC at the same time. Default method is gRPC.
-func broadcastTx(xplac *XplaClient, txBytes []byte, mode txtypes.BroadcastMode) (*types.TxRes, error) {
-
+func broadcastTx(xplac *xplaClient, txBytes []byte, mode txtypes.BroadcastMode) (*types.TxRes, error) {
 	broadcastReq := txtypes.BroadcastTxRequest{
 		TxBytes: txBytes,
 		Mode:    mode,
 	}
 
-	if xplac.Opts.GrpcURL == "" {
+	if xplac.GetGrpcUrl() == "" {
 		vpByte := xplac.GetVPByte()
 		var pAuth middleware.PrivateAuth
 		json.Unmarshal(vpByte, &pAuth)
@@ -42,13 +41,13 @@ func broadcastTx(xplac *XplaClient, txBytes []byte, mode txtypes.BroadcastMode) 
 			return nil, util.LogErr(errors.ErrFailedToMarshal, err)
 		}
 
-		out, err := util.CtxHttpClient("POST", xplac.Opts.LcdURL+broadcastUrl, reqBytes, xplac.Context)
+		out, err := util.CtxHttpClient("POST", xplac.GetLcdURL()+broadcastUrl, reqBytes, xplac.GetContext())
 		if err != nil {
 			return nil, err
 		}
 
 		var broadcastTxResponse txtypes.BroadcastTxResponse
-		err = xplac.EncodingConfig.Marshaler.UnmarshalJSON(out, &broadcastTxResponse)
+		err = xplac.GetEncoding().Marshaler.UnmarshalJSON(out, &broadcastTxResponse)
 		if err != nil {
 			return nil, util.LogErr(errors.ErrFailedToUnmarshal, err)
 		}
@@ -61,8 +60,8 @@ func broadcastTx(xplac *XplaClient, txBytes []byte, mode txtypes.BroadcastMode) 
 		xplaTxRes.Response = txResponse
 	} else {
 		xplac = VPInputGrpcContext(xplac)
-		txClient := txtypes.NewServiceClient(xplac.Grpc)
-		txResponse, err := txClient.BroadcastTx(xplac.Context, &broadcastReq)
+		txClient := txtypes.NewServiceClient(xplac.GetGrpcClient())
+		txResponse, err := txClient.BroadcastTx(xplac.GetContext(), &broadcastReq)
 		if err != nil {
 			return nil, util.LogErr(errors.ErrGrpcRequest, err)
 		}
@@ -74,10 +73,10 @@ func broadcastTx(xplac *XplaClient, txBytes []byte, mode txtypes.BroadcastMode) 
 
 // Broadcast generated transactions of ethereum type.
 // Broadcast responses, including evm, are delivered as "TxResponse".
-func broadcastTxEvm(xplac *XplaClient, txBytes []byte, broadcastMode string, evmClient *util.EvmClient) (*types.TxRes, error) {
+func broadcastTxEvm(xplac *xplaClient, txBytes []byte, broadcastMode string, evmClient *util.EvmClient) (*types.TxRes, error) {
 	switch {
-	case xplac.MsgType == mevm.EvmSendCoinMsgType ||
-		xplac.MsgType == mevm.EvmInvokeSolContractMsgType:
+	case xplac.GetMsgType() == mevm.EvmSendCoinMsgType ||
+		xplac.GetMsgType() == mevm.EvmInvokeSolContractMsgType:
 		var signedTx evmtypes.Transaction
 		err := signedTx.UnmarshalJSON(txBytes)
 		if err != nil {
@@ -91,7 +90,7 @@ func broadcastTxEvm(xplac *XplaClient, txBytes []byte, broadcastMode string, evm
 
 		return checkEvmBroadcastMode(broadcastMode, evmClient, &signedTx)
 
-	case xplac.MsgType == mevm.EvmDeploySolContractMsgType:
+	case xplac.GetMsgType() == mevm.EvmDeploySolContractMsgType:
 		var deployTx mevm.DeploySolTx
 
 		err := json.Unmarshal(txBytes, &deployTx)
@@ -99,7 +98,7 @@ func broadcastTxEvm(xplac *XplaClient, txBytes []byte, broadcastMode string, evm
 			return nil, util.LogErr(errors.ErrFailedToUnmarshal, err)
 		}
 
-		ethPrivKey, err := toECDSA(xplac.Opts.PrivateKey)
+		ethPrivKey, err := toECDSA(xplac.GetPrivateKey())
 		if err != nil {
 			return nil, util.LogErr(errors.ErrCannotConvert, err)
 		}
@@ -137,7 +136,7 @@ func broadcastTxEvm(xplac *XplaClient, txBytes []byte, broadcastMode string, evm
 		return checkEvmBroadcastMode(broadcastMode, evmClient, transaction)
 
 	default:
-		return nil, util.LogErr(errors.ErrInvalidMsgType, "invalid EVM msg type:", xplac.MsgType)
+		return nil, util.LogErr(errors.ErrInvalidMsgType, "invalid EVM msg type:", xplac.GetMsgType())
 	}
 }
 

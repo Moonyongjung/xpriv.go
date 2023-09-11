@@ -38,7 +38,10 @@ func JsonUnmarshal(jsonStruct interface{}, jsonFilePath string) (interface{}, er
 	if err != nil {
 		return nil, err
 	}
-	byteValue, _ := io.ReadAll(jsonData)
+	byteValue, err := io.ReadAll(jsonData)
+	if err != nil {
+		return nil, err
+	}
 	jsonStruct = JsonUnmarshalData(jsonStruct, byteValue)
 
 	return jsonStruct, nil
