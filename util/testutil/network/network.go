@@ -49,16 +49,17 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/evmos/ethermint/crypto/hd"
-	"github.com/evmos/ethermint/server/config"
 	ethermint "github.com/evmos/ethermint/types"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
 	"github.com/Moonyongjung/xpla-private-chain/app"
 	"github.com/Moonyongjung/xpla-private-chain/app/params"
 	"github.com/Moonyongjung/xpla-private-chain/baseapp"
+	xcmd "github.com/Moonyongjung/xpla-private-chain/cmd/xprivd/cmd"
+	"github.com/Moonyongjung/xpla-private-chain/config"
 )
 
-const testChainID = "cube_47-5"
+const testChainID = "xprivcube_47-5"
 
 // package-wide network lock to only allow one test network at a time
 var lock = new(sync.Mutex)
@@ -175,6 +176,8 @@ type (
 		ValAddress    sdk.ValAddress
 		RPCClient     tmclient.Client
 		JSONRPCClient *ethclient.Client
+		AnchorAccount sdk.AccAddress
+		ConsAddress   sdk.ConsAddress
 
 		tmNode      *node.Node
 		api         *api.Server
@@ -403,6 +406,15 @@ func New(t *testing.T, cfg Config) *Network {
 		err = ctx.Viper.ReadInConfig()
 		require.NoError(t, err)
 
+		anchorAccStr, _, err := xcmd.InitializeNodeAnchoringKeyFromMnemonic(tmCfg, "")
+		require.NoError(t, err)
+		anchorAcc, err := sdk.AccAddressFromBech32(anchorAccStr)
+		require.NoError(t, err)
+
+		tmAccAddr, err := sdk.AccAddressFromHex(valPubKeys[i].Address().String())
+		require.NoError(t, err)
+		consAddr := sdk.ConsAddress(tmAccAddr)
+
 		clientCtx := client.Context{}.
 			WithKeyringDir(clientDir).
 			WithKeyring(kb).
@@ -415,18 +427,20 @@ func New(t *testing.T, cfg Config) *Network {
 			WithAccountRetriever(cfg.AccountRetriever)
 
 		network.Validators[i] = &Validator{
-			AppConfig:  appCfg,
-			ClientCtx:  clientCtx,
-			Ctx:        ctx,
-			Dir:        filepath.Join(network.BaseDir, nodeDirName),
-			NodeID:     nodeID,
-			PubKey:     pubKey,
-			Moniker:    nodeDirName,
-			RPCAddress: tmCfg.RPC.ListenAddress,
-			P2PAddress: tmCfg.P2P.ListenAddress,
-			APIAddress: apiAddr,
-			Address:    addr,
-			ValAddress: sdk.ValAddress(addr),
+			AppConfig:     appCfg,
+			ClientCtx:     clientCtx,
+			Ctx:           ctx,
+			Dir:           filepath.Join(network.BaseDir, nodeDirName),
+			NodeID:        nodeID,
+			PubKey:        pubKey,
+			Moniker:       nodeDirName,
+			RPCAddress:    tmCfg.RPC.ListenAddress,
+			P2PAddress:    tmCfg.P2P.ListenAddress,
+			APIAddress:    apiAddr,
+			Address:       addr,
+			ValAddress:    sdk.ValAddress(addr),
+			AnchorAccount: anchorAcc,
+			ConsAddress:   consAddr,
 		}
 	}
 

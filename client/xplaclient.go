@@ -12,6 +12,7 @@ import (
 	"github.com/Moonyongjung/xpriv.go/core/bank"
 	"github.com/Moonyongjung/xpriv.go/core/base"
 	"github.com/Moonyongjung/xpriv.go/core/crisis"
+	"github.com/Moonyongjung/xpriv.go/core/did"
 	"github.com/Moonyongjung/xpriv.go/core/distribution"
 	"github.com/Moonyongjung/xpriv.go/core/evidence"
 	"github.com/Moonyongjung/xpriv.go/core/evm"
@@ -19,6 +20,7 @@ import (
 	"github.com/Moonyongjung/xpriv.go/core/gov"
 	"github.com/Moonyongjung/xpriv.go/core/mint"
 	"github.com/Moonyongjung/xpriv.go/core/params"
+	"github.com/Moonyongjung/xpriv.go/core/private"
 	"github.com/Moonyongjung/xpriv.go/core/slashing"
 	"github.com/Moonyongjung/xpriv.go/core/staking"
 	"github.com/Moonyongjung/xpriv.go/core/upgrade"
@@ -103,6 +105,7 @@ type externalCoreModule struct {
 	bank.BankExternal
 	base.BaseExternal
 	crisis.CrisisExternal
+	did.DidExternal
 	distribution.DistributionExternal
 	evidence.EvidenceExternal
 	evm.EvmExternal
@@ -110,6 +113,7 @@ type externalCoreModule struct {
 	gov.GovExternal
 	mint.MintExternal
 	params.ParamsExternal
+	private.PrivateExternal
 	slashing.SlashingExternal
 	staking.StakingExternal
 	upgrade.UpgradeExternal
@@ -124,6 +128,7 @@ func (xplac *xplaClient) UpdateXplacInCoreModule() provider.XplaClient {
 		bank.NewBankExternal(xplac),
 		base.NewBaseExternal(xplac),
 		crisis.NewCrisisExternal(xplac),
+		did.NewDidExternal(xplac),
 		distribution.NewDistributionExternal(xplac),
 		evidence.NewEvidenceExternal(xplac),
 		evm.NewEvmExternal(xplac),
@@ -131,6 +136,7 @@ func (xplac *xplaClient) UpdateXplacInCoreModule() provider.XplaClient {
 		gov.NewGovExternal(xplac),
 		mint.NewMintExternal(xplac),
 		params.NewParamsExternal(xplac),
+		private.NewPrivateExternal(xplac),
 		slashing.NewSlashingExternal(xplac),
 		staking.NewStakingExternal(xplac),
 		upgrade.NewUpgradeExternal(xplac),

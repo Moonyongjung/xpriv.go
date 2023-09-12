@@ -187,6 +187,12 @@ type TxMsgProvider interface {
 	// crisis
 	InvariantBroken(types.InvariantBrokenMsg) XplaClient
 
+	// did
+	CreateDID(types.CreateDIDMsg) XplaClient
+	UpdateDID(types.UpdateDIDMsg) XplaClient
+	DeactivateDID(types.DeactivateDIDMsg) XplaClient
+	ReplaceDIDMoniker(types.ReplaceDIDMonikerMsg) XplaClient
+
 	// distribution
 	FundCommunityPool(types.FundCommunityPoolMsg) XplaClient
 	CommunityPoolSpend(types.CommunityPoolSpendMsg) XplaClient
@@ -211,6 +217,15 @@ type TxMsgProvider interface {
 
 	// params
 	ParamChange(types.ParamChangeMsg) XplaClient
+
+	// private
+	InitialAdmin(types.InitialAdminMsg) XplaClient
+	AddAdmin(types.AddAdminMsg) XplaClient
+	Participate(types.ParticipateMsg) XplaClient
+	Accept(types.AcceptMsg) XplaClient
+	Deny(types.DenyMsg) XplaClient
+	Exile(types.ExileMsg) XplaClient
+	Quit(types.QuitMsg) XplaClient
 
 	// slashing
 	Unjail() XplaClient
@@ -264,6 +279,12 @@ type QueryMsgProvider interface {
 	Syncing() XplaClient
 	Block(...types.BlockMsg) XplaClient
 	ValidatorSet(...types.ValidatorSetMsg) XplaClient
+
+	// did
+	GetDID(types.GetDIDMsg) XplaClient
+	MonikerByDID(types.MonikerByDIDMsg) XplaClient
+	DIDByMoniker(types.DIDByMonikerMsg) XplaClient
+	AllDIDs() XplaClient
 
 	// distribution
 	DistributionParams() XplaClient
@@ -324,6 +345,16 @@ type QueryMsgProvider interface {
 
 	// params
 	QuerySubspace(types.SubspaceMsg) XplaClient
+
+	// private
+	Admin() XplaClient
+	ParticipateState(types.ParticipateStateMsg) XplaClient
+	ParticipateSequence(types.ParticipateSequenceMsg) XplaClient
+	GenDIDSign(types.GenDIDSignMsg) XplaClient
+	IssueVC(types.IssueVCMsg) XplaClient
+	GetVP(types.GetVPMsg) XplaClient
+	AllUnderReviews() XplaClient
+	AllParticipants() XplaClient
 
 	// slashing
 	SlashingParams() XplaClient

@@ -9,6 +9,7 @@ import (
 	"github.com/Moonyongjung/xpriv.go/core/bank"
 	"github.com/Moonyongjung/xpriv.go/core/base"
 	"github.com/Moonyongjung/xpriv.go/core/crisis"
+	"github.com/Moonyongjung/xpriv.go/core/did"
 	"github.com/Moonyongjung/xpriv.go/core/distribution"
 	"github.com/Moonyongjung/xpriv.go/core/evidence"
 	"github.com/Moonyongjung/xpriv.go/core/evm"
@@ -16,6 +17,7 @@ import (
 	"github.com/Moonyongjung/xpriv.go/core/gov"
 	"github.com/Moonyongjung/xpriv.go/core/mint"
 	"github.com/Moonyongjung/xpriv.go/core/params"
+	"github.com/Moonyongjung/xpriv.go/core/private"
 	"github.com/Moonyongjung/xpriv.go/core/slashing"
 	"github.com/Moonyongjung/xpriv.go/core/staking"
 	"github.com/Moonyongjung/xpriv.go/core/upgrade"
@@ -45,6 +47,7 @@ func Controller() *coreController {
 			bank.NewCoreModule(),
 			base.NewCoreModule(),
 			crisis.NewCoreModule(),
+			did.NewCoreModule(),
 			distribution.NewCoreModule(),
 			evidence.NewCoreModule(),
 			evm.NewCoreModule(),
@@ -52,6 +55,7 @@ func Controller() *coreController {
 			gov.NewCoreModule(),
 			mint.NewCoreModule(),
 			params.NewCoreModule(),
+			private.NewCoreModule(),
 			slashing.NewCoreModule(),
 			staking.NewCoreModule(),
 			upgrade.NewCoreModule(),
