@@ -31,6 +31,7 @@ import (
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/Moonyongjung/xpla-private-chain/serve"
+	anchortypes "github.com/Moonyongjung/xpla-private-chain/x/anchor/types"
 )
 
 func startInProcess(cfg Config, val *Validator) error {
@@ -183,6 +184,13 @@ func collectGenFiles(cfg Config, vals []*Validator, outputDir string) error {
 }
 
 func initGenFiles(cfg Config, genAccounts []authtypes.GenesisAccount, genBalances []banktypes.Balance, genFiles []string) error {
+	// set anchor module genesis
+	var anchorGenState anchortypes.GenesisState
+	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[anchortypes.ModuleName], &anchorGenState)
+
+	anchorGenState.Params.Epoch = 3
+	cfg.GenesisState[anchortypes.ModuleName] = cfg.Codec.MustMarshalJSON(&anchorGenState)
+
 	// set the accounts in the genesis state
 	var authGenState authtypes.GenesisState
 	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[authtypes.ModuleName], &authGenState)
