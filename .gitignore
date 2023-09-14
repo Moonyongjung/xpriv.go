@@ -4,5 +4,6 @@
 docs
 .pytest_cache
 yarn.lock
-.github/
 backup/
+coverage.out
+test.sh

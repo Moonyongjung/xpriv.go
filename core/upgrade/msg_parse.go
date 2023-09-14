@@ -13,9 +13,13 @@ import (
 
 // Parsing - software upgrade
 func parseProposalSoftwareUpgradeArgs(softwareUpgradeMsg types.SoftwareUpgradeMsg, privKey key.PrivateKey) (govtypes.MsgSubmitProposal, error) {
+	heightI64, err := util.FromStringToInt64(softwareUpgradeMsg.UpgradeHeight)
+	if err != nil {
+		return govtypes.MsgSubmitProposal{}, util.LogErr(errors.ErrParse, err)
+	}
 	plan := upgradetypes.Plan{
 		Name:   softwareUpgradeMsg.UpgradeName,
-		Height: util.FromStringToInt64(softwareUpgradeMsg.UpgradeHeight),
+		Height: heightI64,
 		Info:   softwareUpgradeMsg.UpgradeInfo,
 	}
 	content := upgradetypes.NewSoftwareUpgradeProposal(

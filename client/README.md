@@ -1,5 +1,5 @@
 # Xpla client
-The xpla client is a client for performing all functions within the xpriv.go library.
+The xpla client is a client for performing all functions within the xpla.go library.
 The user mandatorily inputs chain ID.
 
 ## Ready to run Xpla client
@@ -21,7 +21,7 @@ addr, err := key.Bech32AddrString(priKey)
 xplac := client.NewXplaClient("chain-id")
 
 // Set private key
-xplac = xplac.WithOptions(client.Options{PrivateKey: priKey})
+xplac = xplac.WithPrivateKey(priKey)
 ```
 ### Set URLs for xpla client
 ```go
@@ -29,7 +29,7 @@ xplac = xplac.WithOptions(client.Options{PrivateKey: priKey})
 xplac := client.NewXplaClient(
     "chain-id",    
 ).WithOptions(
-    client.Options{
+    provider.Options{
         LcdURL: "http://localhost:1317",
     }
 )
@@ -38,7 +38,7 @@ xplac := client.NewXplaClient(
 xplac := client.NewXplaClient(
     "chain-id",    
 ).WithOptions(
-    client.Options{
+    provider.Options{
         GrpcURL: "http://localhost:9090",
     }
 )
@@ -48,7 +48,7 @@ xplac := client.NewXplaClient(
 xplac := client.NewXplaClient(
     "chain-id",    
 ).WithOptions(
-    client.Options{
+    provider.Options{
         RpcURL: "http://localhost:26657",
     }
 )
@@ -57,7 +57,7 @@ xplac := client.NewXplaClient(
 xplac := client.NewXplaClient(
     "chain-id",    
 ).WithOptions(
-    client.Options{
+    provider.Options{
         EvmRpcURL: "http://localhost:8545",
     }
 )
@@ -65,6 +65,8 @@ xplac := client.NewXplaClient(
 
 ### Optional parameters of xpla client
 ```go
+// github.com/Moonyongjung/xpriv.go/provider.go
+
 type Options struct {    
     // Set private key
     PrivateKey     key.PrivateKey
@@ -100,11 +102,13 @@ type Options struct {
     Pagination     types.Pagination
     // Set output document name when created transaction with json file
     // "Generate only" is same that OutputDocument is not empty string 
-    OutputDocument string	
+    OutputDocument string
+    // Use verifiable presentation for accessing XPLA private chain
+    UseVP          bool
     // Set VP by using json file
-    VPPath string
+    VPPath         string
     // Set VP by using string
-    VPString string
+    VPString       string	
 }
 ```
 

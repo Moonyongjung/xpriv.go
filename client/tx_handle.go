@@ -1,34 +1,19 @@
 package client
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"encoding/base64"
 	"math/big"
 	"os"
 
-	manchor "github.com/Moonyongjung/xpriv.go/core/anchor"
-	mbank "github.com/Moonyongjung/xpriv.go/core/bank"
-	mcrisis "github.com/Moonyongjung/xpriv.go/core/crisis"
-	mdid "github.com/Moonyongjung/xpriv.go/core/did"
-	mdist "github.com/Moonyongjung/xpriv.go/core/distribution"
-	mfeegrant "github.com/Moonyongjung/xpriv.go/core/feegrant"
-	mgov "github.com/Moonyongjung/xpriv.go/core/gov"
-	mparams "github.com/Moonyongjung/xpriv.go/core/params"
-	mpriv "github.com/Moonyongjung/xpriv.go/core/private"
-	mslashing "github.com/Moonyongjung/xpriv.go/core/slashing"
-	mstaking "github.com/Moonyongjung/xpriv.go/core/staking"
-	mupgrade "github.com/Moonyongjung/xpriv.go/core/upgrade"
-	mwasm "github.com/Moonyongjung/xpriv.go/core/wasm"
+	"github.com/Moonyongjung/xpriv.go/controller"
 	"github.com/Moonyongjung/xpriv.go/key"
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/Moonyongjung/xpriv.go/types/errors"
 	"github.com/Moonyongjung/xpriv.go/util"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/CosmWasm/wasmd/x/wasm"
-	anchortypes "github.com/Moonyongjung/xpla-private-chain/x/anchor/types"
-	didtypes "github.com/Moonyongjung/xpla-private-chain/x/did/types"
-	privtypes "github.com/Moonyongjung/xpla-private-chain/x/private/types"
 	cmclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -37,13 +22,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
 	xauthsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ethereum/go-ethereum/common"
 	evmtypes "github.com/ethereum/go-ethereum/core/types"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
@@ -51,222 +29,54 @@ import (
 
 // Set message for transaction builder.
 // Interface type messages are converted to correct type.
-func setTxBuilderMsg(xplac *XplaClient) (cmclient.TxBuilder, error) {
-	if xplac.Err != nil {
-		return nil, xplac.Err
+func setTxBuilderMsg(xplac *xplaClient) (cmclient.TxBuilder, error) {
+	if xplac.GetErr() != nil {
+		return nil, xplac.GetErr()
 	}
 
-	builder := xplac.EncodingConfig.TxConfig.NewTxBuilder()
+	builder := xplac.GetEncoding().TxConfig.NewTxBuilder()
 
-	// Anchor module
-	if xplac.MsgType == manchor.AnchorRegisterAnchorAccMsgType {
-		convertMsg, _ := xplac.Msg.(anchortypes.MsgRegisterAnchorAcc)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == manchor.AnchorChangeAnchorAccMsgType {
-		convertMsg, _ := xplac.Msg.(anchortypes.MsgChangeAnchorAcc)
-		builder.SetMsgs(&convertMsg)
-
-		// Bank module
-	} else if xplac.MsgType == mbank.BankSendMsgType {
-		convertMsg, _ := xplac.Msg.(banktypes.MsgSend)
-		builder.SetMsgs(&convertMsg)
-
-		// Crisis module
-	} else if xplac.MsgType == mcrisis.CrisisInvariantBrokenMsgType {
-		convertMsg, _ := xplac.Msg.(crisistypes.MsgVerifyInvariant)
-		builder.SetMsgs(&convertMsg)
-
-		// DID module
-	} else if xplac.MsgType == mdid.DidCreateDidMsgType {
-		convertMsg, _ := xplac.Msg.(didtypes.MsgCreateDID)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mdid.DidUpdateDidMsgType {
-		convertMsg, _ := xplac.Msg.(didtypes.MsgUpdateDID)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mdid.DidDeactivateDidMsgType {
-		convertMsg, _ := xplac.Msg.(didtypes.MsgDeactivateDID)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mdid.DidReplaceDidMonikerMsgType {
-		convertMsg, _ := xplac.Msg.(didtypes.MsgReplaceDIDMoniker)
-		builder.SetMsgs(&convertMsg)
-
-		// Distribution module
-	} else if xplac.MsgType == mdist.DistributionFundCommunityPoolMsgType {
-		convertMsg, _ := xplac.Msg.(disttypes.MsgFundCommunityPool)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mdist.DistributionProposalCommunityPoolSpendMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgSubmitProposal)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mdist.DistributionWithdrawRewardsMsgType {
-		convertMsg, _ := xplac.Msg.([]sdk.Msg)
-		builder.SetMsgs(convertMsg...)
-
-	} else if xplac.MsgType == mdist.DistributionWithdrawAllRewardsMsgType {
-		convertMsg, _ := xplac.Msg.([]sdk.Msg)
-		builder.SetMsgs(convertMsg...)
-
-	} else if xplac.MsgType == mdist.DistributionSetWithdrawAddrMsgType {
-		convertMsg, _ := xplac.Msg.(disttypes.MsgSetWithdrawAddress)
-		builder.SetMsgs(&convertMsg)
-
-		// Feegrant module
-	} else if xplac.MsgType == mfeegrant.FeegrantGrantMsgType {
-		convertMsg, _ := xplac.Msg.(feegrant.MsgGrantAllowance)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mfeegrant.FeegrantRevokeGrantMsgType {
-		convertMsg, _ := xplac.Msg.(feegrant.MsgRevokeAllowance)
-		builder.SetMsgs(&convertMsg)
-
-		// Gov module
-	} else if xplac.MsgType == mgov.GovSubmitProposalMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgSubmitProposal)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mgov.GovDepositMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgDeposit)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mgov.GovVoteMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgVote)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mgov.GovWeightedVoteMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgVoteWeighted)
-		builder.SetMsgs(&convertMsg)
-
-		// Params module
-	} else if xplac.MsgType == mparams.ParamsProposalParamChangeMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgSubmitProposal)
-		builder.SetMsgs(&convertMsg)
-
-		// Private module
-	} else if xplac.MsgType == mpriv.PrivateInitialAdminMsgType {
-		convertMsg, _ := xplac.Msg.(privtypes.MsgInitialAdmin)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mpriv.PrivateAddAdminMsgType {
-		convertMsg, _ := xplac.Msg.(privtypes.MsgAddAdmin)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mpriv.PrivateParticipateMsgType {
-		convertMsg, _ := xplac.Msg.(privtypes.MsgParticipate)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mpriv.PrivateAcceptMsgType {
-		convertMsg, _ := xplac.Msg.(privtypes.MsgAccept)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mpriv.PrivateDenyMsgType {
-		convertMsg, _ := xplac.Msg.(privtypes.MsgDeny)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mpriv.PrivateExileMsgType {
-		convertMsg, _ := xplac.Msg.(privtypes.MsgExile)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mpriv.PrivateQuitMsgType {
-		convertMsg, _ := xplac.Msg.(privtypes.MsgQuit)
-		builder.SetMsgs(&convertMsg)
-
-		// slashing module
-	} else if xplac.MsgType == mslashing.SlahsingUnjailMsgType {
-		convertMsg, _ := xplac.Msg.(slashingtypes.MsgUnjail)
-		builder.SetMsgs(&convertMsg)
-
-		// Staking module
-	} else if xplac.MsgType == mstaking.StakingCreateValidatorMsgType {
-		convertMsg, _ := xplac.Msg.(sdk.Msg)
-		builder.SetMsgs(convertMsg)
-
-	} else if xplac.MsgType == mstaking.StakingEditValidatorMsgType {
-		convertMsg, _ := xplac.Msg.(stakingtypes.MsgEditValidator)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mstaking.StakingDelegateMsgType {
-		convertMsg, _ := xplac.Msg.(stakingtypes.MsgDelegate)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mstaking.StakingUnbondMsgType {
-		convertMsg, _ := xplac.Msg.(stakingtypes.MsgUndelegate)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mstaking.StakingRedelegateMsgType {
-		convertMsg, _ := xplac.Msg.(stakingtypes.MsgBeginRedelegate)
-		builder.SetMsgs(&convertMsg)
-
-		// Upgrade module
-	} else if xplac.MsgType == mupgrade.UpgradeProposalSoftwareUpgradeMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgSubmitProposal)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mupgrade.UpgradeCancelSoftwareUpgradeMsgType {
-		convertMsg, _ := xplac.Msg.(govtypes.MsgSubmitProposal)
-		builder.SetMsgs(&convertMsg)
-
-		// Wasm module
-	} else if xplac.MsgType == mwasm.WasmStoreMsgType {
-		convertMsg, _ := xplac.Msg.(wasm.MsgStoreCode)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mwasm.WasmInstantiateMsgType {
-		convertMsg, _ := xplac.Msg.(wasm.MsgInstantiateContract)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mwasm.WasmExecuteMsgType {
-		convertMsg, _ := xplac.Msg.(wasm.MsgExecuteContract)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mwasm.WasmClearContractAdminMsgType {
-		convertMsg, _ := xplac.Msg.(wasm.MsgClearAdmin)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mwasm.WasmSetContractAdminMsgType {
-		convertMsg, _ := xplac.Msg.(wasm.MsgUpdateAdmin)
-		builder.SetMsgs(&convertMsg)
-
-	} else if xplac.MsgType == mwasm.WasmMigrateMsgType {
-		convertMsg, _ := xplac.Msg.(wasm.MsgMigrateContract)
-		builder.SetMsgs(&convertMsg)
-
-	} else {
-		return nil, util.LogErr(errors.ErrInvalidMsgType, xplac.MsgType)
-	}
-
-	return builder, nil
+	return controller.Controller().Get(xplac.GetModule()).
+		NewTxRouter(builder, xplac.GetMsgType(), xplac.GetMsg())
 }
 
 // Set information for transaction builder.
-func convertAndSetBuilder(xplac *XplaClient, builder cmclient.TxBuilder, gasLimit string, feeAmount string) cmclient.TxBuilder {
-	feeAmountDenomRemove, _ := util.FromStringToBigInt(util.DenomRemove(feeAmount))
+func convertAndSetBuilder(xplac *xplaClient, builder cmclient.TxBuilder, gasLimit string, feeAmount string) (cmclient.TxBuilder, error) {
+	feeAmountDenomRemove, err := util.FromStringToBigInt(util.DenomRemove(feeAmount))
+	if err != nil {
+		return nil, err
+	}
 	feeAmountCoin := sdk.Coin{
 		Amount: sdk.NewIntFromBigInt(feeAmountDenomRemove),
 		Denom:  types.XplaDenom,
 	}
 	feeAmountCoins := sdk.NewCoins(feeAmountCoin)
 
-	if xplac.Opts.TimeoutHeight != "" {
-		builder.SetTimeoutHeight(util.FromStringToUint64(xplac.Opts.TimeoutHeight))
+	if xplac.GetTimeoutHeight() != "" {
+		h, err := util.FromStringToUint64(xplac.GetTimeoutHeight())
+		if err != nil {
+			return nil, err
+		}
+		builder.SetTimeoutHeight(h)
 	}
 	if types.Memo != "" {
 		builder.SetMemo(types.Memo)
+		types.Memo = ""
+	}
+	gasLimitStr, err := util.FromStringToUint64(gasLimit)
+	if err != nil {
+		return nil, err
 	}
 
+	builder.SetGasLimit(gasLimitStr)
 	builder.SetFeeAmount(feeAmountCoins)
-	builder.SetGasLimit(util.FromStringToUint64(gasLimit))
-	builder.SetFeeGranter(xplac.Opts.FeeGranter)
+	builder.SetFeeGranter(xplac.GetFeeGranter())
 
-	return builder
+	return builder, nil
 }
 
 // Sign transaction by using given private key.
-func txSignRound(xplac *XplaClient,
+func txSignRound(xplac *xplaClient,
 	sigsV2 []signing.SignatureV2,
 	privs []cryptotypes.PrivKey,
 	accSeqs []uint64,
@@ -277,7 +87,7 @@ func txSignRound(xplac *XplaClient,
 		sigV2 := signing.SignatureV2{
 			PubKey: priv.PubKey(),
 			Data: &signing.SingleSignatureData{
-				SignMode:  xplac.Opts.SignMode,
+				SignMode:  xplac.GetSignMode(),
 				Signature: nil,
 			},
 			Sequence: accSeqs[i],
@@ -293,16 +103,16 @@ func txSignRound(xplac *XplaClient,
 	sigsV2 = []signing.SignatureV2{}
 	for i, priv := range privs {
 		signerData := xauthsigning.SignerData{
-			ChainID:       xplac.ChainId,
+			ChainID:       xplac.GetChainId(),
 			AccountNumber: accNums[i],
 			Sequence:      accSeqs[i],
 		}
 		sigV2, err := tx.SignWithPrivKey(
-			xplac.Opts.SignMode,
+			xplac.GetSignMode(),
 			signerData,
 			builder,
 			priv,
-			xplac.EncodingConfig.TxConfig,
+			xplac.GetEncoding().TxConfig,
 			accSeqs[i],
 		)
 		if err != nil {
@@ -321,7 +131,7 @@ func txSignRound(xplac *XplaClient,
 }
 
 // Sign evm transaction by using given private key.
-func evmTxSignRound(xplac *XplaClient,
+func evmTxSignRound(xplac *xplaClient,
 	toAddr common.Address,
 	gasPrice *big.Int,
 	gasLimit string,
@@ -330,11 +140,20 @@ func evmTxSignRound(xplac *XplaClient,
 	chainId *big.Int,
 	ethPrivKey *ecdsa.PrivateKey) ([]byte, error) {
 
+	seqU64, err := util.FromStringToUint64(xplac.GetSequence())
+	if err != nil {
+		return nil, err
+	}
+	gasLimitStr, err := util.FromStringToUint64(gasLimit)
+	if err != nil {
+		return nil, err
+	}
+
 	tx := evmtypes.NewTransaction(
-		util.FromStringToUint64(xplac.Opts.Sequence),
+		seqU64,
 		toAddr,
 		amount,
-		util.FromStringToUint64(gasLimit),
+		gasLimitStr,
 		gasPrice,
 		invokeByteData,
 	)
@@ -408,17 +227,17 @@ func getMultisigInfo(clientCtx cmclient.Context, name string) (keyring.Info, err
 }
 
 // Calculate gas limit and fee amount
-func getGasLimitFeeAmount(xplac *XplaClient, builder cmclient.TxBuilder) (string, string, error) {
+func getGasLimitFeeAmount(xplac *xplaClient, builder cmclient.TxBuilder) (string, string, error) {
 	gasLimit := xplac.GetGasLimit()
-	if xplac.Opts.GasLimit == "" {
-		if xplac.Opts.LcdURL == "" && xplac.Opts.GrpcURL == "" {
+	if xplac.GetGasLimit() == "" {
+		if xplac.GetLcdURL() == "" && xplac.GetGrpcUrl() == "" {
 			gasLimit = types.DefaultGasLimit
 		} else {
 			simulate, err := xplac.Simulate(builder)
 			if err != nil {
 				return "", "", err
 			}
-			gasLimitAdjustment, err := util.GasLimitAdjustment(simulate.GasInfo.GasUsed, xplac.Opts.GasAdjustment)
+			gasLimitAdjustment, err := util.GasLimitAdjustment(simulate.GasInfo.GasUsed, xplac.GetGasAdjustment())
 			if err != nil {
 				return "", "", err
 			}
@@ -427,13 +246,13 @@ func getGasLimitFeeAmount(xplac *XplaClient, builder cmclient.TxBuilder) (string
 	}
 
 	feeAmount := xplac.GetFeeAmount()
-	if xplac.Opts.FeeAmount == "" {
+	if xplac.GetFeeAmount() == "" {
 		gasLimitBigInt, err := util.FromStringToBigInt(gasLimit)
 		if err != nil {
 			return "", "", err
 		}
 
-		gasPriceBigInt, err := util.FromStringToBigInt(xplac.Opts.GasPrice)
+		gasPriceBigInt, err := util.FromStringToBigInt(xplac.GetGasPrice())
 		if err != nil {
 			return "", "", err
 		}
@@ -445,7 +264,36 @@ func getGasLimitFeeAmount(xplac *XplaClient, builder cmclient.TxBuilder) (string
 	return gasLimit, feeAmount, nil
 }
 
-func VPInputGrpcContext(xplac *XplaClient) *XplaClient {
+// check user = signer
+func isTxSigner(user sdk.AccAddress, signers []sdk.AccAddress) bool {
+	for _, s := range signers {
+		if bytes.Equal(user.Bytes(), s.Bytes()) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// Get account number and sequence
+func GetAccNumAndSeq(xplac *xplaClient) (*xplaClient, error) {
+	if xplac.GetAccountNumber() == "" || xplac.GetSequence() == "" {
+		if xplac.GetLcdURL() == "" && xplac.GetGrpcUrl() == "" {
+			xplac.WithAccountNumber(util.FromUint64ToString(types.DefaultAccNum))
+			xplac.WithSequence(util.FromUint64ToString(types.DefaultAccSeq))
+		} else {
+			account, err := xplac.LoadAccount(sdk.AccAddress(xplac.GetPrivateKey().PubKey().Address()))
+			if err != nil {
+				return nil, err
+			}
+			xplac.WithAccountNumber(util.FromUint64ToString(account.GetAccountNumber()))
+			xplac.WithSequence(util.FromUint64ToString(account.GetSequence()))
+		}
+	}
+	return xplac, nil
+}
+
+func VPInputGrpcContext(xplac *xplaClient) *xplaClient {
 	if xplac.GetVPByte() != nil {
 		base64VP := base64.StdEncoding.EncodeToString(xplac.GetVPByte())
 

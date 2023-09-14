@@ -43,7 +43,10 @@ func parseSubmitProposalArgs(submitProposalMsg types.SubmitProposalMsg, privKey 
 
 // Parsing - deposit
 func parseGovDepositArgs(govDepositMsg types.GovDepositMsg, privKey key.PrivateKey) (govtypes.MsgDeposit, error) {
-	proposalId := util.FromStringToUint64(govDepositMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(govDepositMsg.ProposalID)
+	if err != nil {
+		return govtypes.MsgDeposit{}, util.LogErr(errors.ErrParse, err)
+	}
 	from, err := util.GetAddrByPrivKey(privKey)
 	if err != nil {
 		return govtypes.MsgDeposit{}, util.LogErr(errors.ErrParse, err)
@@ -60,7 +63,10 @@ func parseGovDepositArgs(govDepositMsg types.GovDepositMsg, privKey key.PrivateK
 
 // Parsing - vote
 func parseVoteArgs(voteMsg types.VoteMsg, privKey key.PrivateKey) (govtypes.MsgVote, error) {
-	proposalId := util.FromStringToUint64(voteMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(voteMsg.ProposalID)
+	if err != nil {
+		return govtypes.MsgVote{}, util.LogErr(errors.ErrParse, err)
+	}
 	from, err := util.GetAddrByPrivKey(privKey)
 	if err != nil {
 		return govtypes.MsgVote{}, util.LogErr(errors.ErrParse, err)
@@ -77,7 +83,10 @@ func parseVoteArgs(voteMsg types.VoteMsg, privKey key.PrivateKey) (govtypes.MsgV
 
 // Parsing - weighted vote
 func parseWeightedVoteArgs(weightedVoteMsg types.WeightedVoteMsg, privKey key.PrivateKey) (govtypes.MsgVoteWeighted, error) {
-	proposalId := util.FromStringToUint64(weightedVoteMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(weightedVoteMsg.ProposalID)
+	if err != nil {
+		return govtypes.MsgVoteWeighted{}, util.LogErr(errors.ErrParse, err)
+	}
 	from, err := util.GetAddrByPrivKey(privKey)
 	if err != nil {
 		return govtypes.MsgVoteWeighted{}, util.LogErr(errors.ErrParse, err)
@@ -136,7 +145,10 @@ func parseQueryProposalsArgs(queryProposalsMsg types.QueryProposalsMsg) (govtype
 func parseQueryDepositArgs(queryDepositMsg types.QueryDepositMsg, grpcConn grpc.ClientConn, ctx context.Context, lcdUrl string, queryType int) (interface{}, string, error) {
 	var propStatus govtypes.ProposalStatus
 
-	proposalId := util.FromStringToUint64(queryDepositMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(queryDepositMsg.ProposalID)
+	if err != nil {
+		return nil, "", util.LogErr(errors.ErrParse, err)
+	}
 	depositorAddr, err := sdk.AccAddressFromBech32(queryDepositMsg.Depositor)
 	if err != nil {
 		return nil, "", util.LogErr(errors.ErrParse, err)
@@ -185,7 +197,10 @@ func parseQueryDepositArgs(queryDepositMsg types.QueryDepositMsg, grpcConn grpc.
 // Parsing - query deposits
 func parseQueryDepositsArgs(queryDepositMsg types.QueryDepositMsg, grpcConn grpc.ClientConn, ctx context.Context, lcdUrl string, queryType int) (interface{}, string, error) {
 	var propStatus govtypes.ProposalStatus
-	proposalId := util.FromStringToUint64(queryDepositMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(queryDepositMsg.ProposalID)
+	if err != nil {
+		return nil, "", util.LogErr(errors.ErrParse, err)
+	}
 
 	if queryType == types.QueryGrpc {
 		queryClient := govtypes.NewQueryClient(grpcConn)
@@ -229,7 +244,10 @@ func parseQueryDepositsArgs(queryDepositMsg types.QueryDepositMsg, grpcConn grpc
 
 // Parsing - tally
 func parseGovTallyArgs(tallyMsg types.TallyMsg, grpcConn grpc.ClientConn, ctx context.Context, lcdUrl string, queryType int) (govtypes.QueryTallyResultRequest, error) {
-	proposalId := util.FromStringToUint64(tallyMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(tallyMsg.ProposalID)
+	if err != nil {
+		return govtypes.QueryTallyResultRequest{}, util.LogErr(errors.ErrParse, err)
+	}
 
 	if queryType == types.QueryGrpc {
 		queryClient := govtypes.NewQueryClient(grpcConn)
@@ -272,7 +290,10 @@ func parseGovParamArgs(govParamsMsg types.GovParamsMsg) (govtypes.QueryParamsReq
 
 // Parsing - query vote
 func parseQueryVoteArgs(queryVoteMsg types.QueryVoteMsg, grpcConn grpc.ClientConn, ctx context.Context, lcdUrl string, queryType int) (govtypes.QueryVoteRequest, error) {
-	proposalId := util.FromStringToUint64(queryVoteMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(queryVoteMsg.ProposalID)
+	if err != nil {
+		return govtypes.QueryVoteRequest{}, util.LogErr(errors.ErrParse, err)
+	}
 
 	if queryType == types.QueryGrpc {
 		queryClient := govtypes.NewQueryClient(grpcConn)
@@ -304,7 +325,10 @@ func parseQueryVoteArgs(queryVoteMsg types.QueryVoteMsg, grpcConn grpc.ClientCon
 // Parsing - query votes
 func parseQueryVotesArgs(queryVoteMsg types.QueryVoteMsg, grpcConn grpc.ClientConn, ctx context.Context, lcdUrl string, queryType int) (interface{}, string, error) {
 	var propStatus govtypes.ProposalStatus
-	proposalId := util.FromStringToUint64(queryVoteMsg.ProposalID)
+	proposalId, err := util.FromStringToUint64(queryVoteMsg.ProposalID)
+	if err != nil {
+		return nil, "", util.LogErr(errors.ErrParse, err)
+	}
 
 	if queryType == types.QueryGrpc {
 		queryClient := govtypes.NewQueryClient(grpcConn)

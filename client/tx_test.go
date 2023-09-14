@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Moonyongjung/xpriv.go/provider"
 	"github.com/Moonyongjung/xpriv.go/types"
 	"github.com/Moonyongjung/xpriv.go/util"
 	"github.com/Moonyongjung/xpriv.go/util/testutil"
@@ -13,6 +14,7 @@ import (
 	xapp "github.com/Moonyongjung/xpla-private-chain/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/stretchr/testify/suite"
@@ -22,13 +24,15 @@ import (
 type TestSuite struct {
 	suite.Suite
 
-	ctx sdk.Context
-	app *xapp.XplaApp
+	ctx         sdk.Context
+	app         *xapp.XplaApp
+	queryClient authz.QueryClient
 }
 
 const (
-	unsignedTxPath = "../util/testutil/test_files/unsignedTx.json"
-	signedTxPath   = "../util/testutil/test_files/signedTx.json"
+	unsignedTxPath  = "../util/testutil/test_files/unsignedTx.json"
+	signedTxPath    = "../util/testutil/test_files/signedTx.json"
+	signedEVMTxPath = "../util/testutil/test_files/signedEVMTx.json"
 )
 
 func (suite *TestSuite) SetupTest() {
@@ -48,11 +52,16 @@ func (suite *TestSuite) TestSimulateCreateUnsignedTx() {
 	to := accounts[1]
 	coins := randomSendCoins(r, suite.ctx, from, suite.app.BankKeeper, suite.app.AccountKeeper)
 
-	fee := util.FromUint64ToString(util.MulUint64(util.FromStringToUint64(types.DefaultGasLimit), util.FromStringToUint64(types.DefaultGasPrice)))
+	gasLimitU64, err := util.FromStringToUint64(types.DefaultGasLimit)
+	suite.Require().NoError(err)
+	gasPriceU64, err := util.FromStringToUint64(types.DefaultGasPrice)
+	suite.Require().NoError(err)
+
+	fee := util.FromUint64ToString(util.MulUint64(gasLimitU64, gasPriceU64))
 
 	xplac := NewXplaClient(testutil.TestChainId)
 	xplac.WithOptions(
-		Options{
+		provider.Options{
 			GasLimit:  types.DefaultGasLimit,
 			FeeAmount: fee,
 		},
@@ -73,7 +82,7 @@ func (suite *TestSuite) TestSimulateCreateUnsignedTx() {
 	_, _, newTx, err := readTxAndInitContexts(clientCtx, unsignedTxPath)
 	suite.Require().NoError(err)
 
-	newTxbytes, err := xplac.EncodingConfig.TxConfig.TxEncoder()(newTx)
+	newTxbytes, err := xplac.GetEncoding().TxConfig.TxEncoder()(newTx)
 	suite.Require().NoError(err)
 	suite.Require().Equal(txbytes, newTxbytes)
 }
@@ -86,7 +95,7 @@ func (suite *TestSuite) TestSimulateSignTx() {
 
 	xplac := NewXplaClient(testutil.TestChainId)
 	xplac.WithOptions(
-		Options{
+		provider.Options{
 			GasLimit:   types.DefaultGasLimit,
 			GasPrice:   types.DefaultGasPrice,
 			PrivateKey: from.PrivKey,
@@ -97,7 +106,6 @@ func (suite *TestSuite) TestSimulateSignTx() {
 		UnsignedFileName: unsignedTxPath,
 		SignatureOnly:    false,
 		MultisigAddress:  "",
-		FromAddress:      from.Address.String(),
 		Overwrite:        false,
 		Amino:            false,
 	}
@@ -111,7 +119,7 @@ func (suite *TestSuite) TestSimulateSignTx() {
 	_, _, newTx, err := readTxAndInitContexts(clientCtx, signedTxPath)
 	suite.Require().NoError(err)
 
-	newTxbytes, err := xplac.EncodingConfig.TxConfig.TxJSONEncoder()(newTx)
+	newTxbytes, err := xplac.GetEncoding().TxConfig.TxJSONEncoder()(newTx)
 	suite.Require().NoError(err)
 	suite.Require().Equal(txbytes, newTxbytes)
 }
@@ -128,7 +136,7 @@ func (suite *TestSuite) TestSimulateSignatureOnly() {
 	accList := []simtypes.Account{from, to, m1, m2}
 	xplac := NewXplaClient(testutil.TestChainId)
 	xplac.WithOptions(
-		Options{
+		provider.Options{
 			GasLimit: types.DefaultGasLimit,
 			GasPrice: types.DefaultGasPrice,
 		},
@@ -136,7 +144,7 @@ func (suite *TestSuite) TestSimulateSignatureOnly() {
 
 	for i, acc := range accList {
 		xplac.WithOptions(
-			Options{
+			provider.Options{
 				PrivateKey: acc.PrivKey,
 			},
 		)
@@ -145,7 +153,6 @@ func (suite *TestSuite) TestSimulateSignatureOnly() {
 			UnsignedFileName: unsignedTxPath,
 			SignatureOnly:    true,
 			MultisigAddress:  "",
-			FromAddress:      acc.Address.String(),
 			Overwrite:        false,
 			Amino:            false,
 		}
@@ -154,8 +161,10 @@ func (suite *TestSuite) TestSimulateSignatureOnly() {
 		suite.Require().NoError(err)
 
 		signPath := "../util/testutil/test_files/signature" + util.FromIntToString(i) + ".json"
+		jsonByte, err := convertJson(signPath)
+		suite.Require().NoError(err)
 
-		suite.Require().Equal(txbytes, convertJson(signPath))
+		suite.Require().Equal(txbytes, jsonByte)
 	}
 }
 
@@ -185,9 +194,36 @@ func (suite *TestSuite) TestSimulateCreateAndSignTx() {
 	_, _, newTx, err := readTxAndInitContexts(clientCtx, signedTxPath)
 	suite.Require().NoError(err)
 
-	newTxbytes, err := xplac.EncodingConfig.TxConfig.TxEncoder()(newTx)
+	newTxbytes, err := xplac.GetEncoding().TxConfig.TxEncoder()(newTx)
 	suite.Require().NoError(err)
 	suite.Require().Equal(txbytes, newTxbytes)
+}
+
+func (suite *TestSuite) TestSimulateEVMCreateAndSignTx() {
+	s := rand.NewSource(1)
+	r := rand.New(s)
+	accounts := suite.getTestingAccounts(r, 4)
+	from := accounts[0]
+
+	testABIJsonFilePath := "../util/testutil/test_files/abi.json"
+	testBytecodeJsonFilePath := "../util/testutil/test_files/bytecode.json"
+
+	xplac := NewXplaClient(testutil.TestChainId)
+	xplac.WithPrivateKey(from.PrivKey)
+
+	// deploy
+	deploySolContractMsg := types.DeploySolContractMsg{
+		ABIJsonFilePath:      testABIJsonFilePath,
+		BytecodeJsonFilePath: testBytecodeJsonFilePath,
+		Args:                 nil,
+	}
+	txbytes, err := xplac.DeploySolidityContract(deploySolContractMsg).CreateAndSignTx()
+	suite.Require().NoError(err)
+
+	file, err := os.ReadFile(signedEVMTxPath)
+	suite.Require().NoError(err)
+
+	suite.Require().Equal(txbytes, file)
 }
 
 func (suite *TestSuite) TestSimulateEncodeAndDecodeTx() {
@@ -215,7 +251,7 @@ func (suite *TestSuite) TestSimulateEncodeAndDecodeTx() {
 	_, _, newTx, err := readTxAndInitContexts(clientCtx, unsignedTxPath)
 	suite.Require().NoError(err)
 
-	newTxbytes, err := xplac.EncodingConfig.TxConfig.TxJSONEncoder()(newTx)
+	newTxbytes, err := xplac.GetEncoding().TxConfig.TxJSONEncoder()(newTx)
 	suite.Require().NoError(err)
 	suite.Require().Equal([]byte(decodeRes), newTxbytes)
 }
@@ -266,11 +302,14 @@ func randomSendCoins(
 	return sendCoins
 }
 
-func convertJson(filePath string) []byte {
-	bytes, _ := os.ReadFile(filePath)
+func convertJson(filePath string) ([]byte, error) {
+	bytes, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
 	temp := strings.Replace(string(bytes), " ", "", -1)
 	temp = strings.Replace(temp, "\n", "", -1)
-	return []byte(temp)
+	return []byte(temp), nil
 }
 
 func TestTestSuite(t *testing.T) {

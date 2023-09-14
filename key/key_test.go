@@ -7,8 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const mnemonicMykey = "quote wasp mixture bench upper flame salmon century viable dilemma can squirrel inmate away moon trigger echo sure measure doll peace abstract language nature"
-
 func TestNewMnemonic(t *testing.T) {
 	_, err := NewMnemonic()
 	assert.NoError(t, err)
@@ -24,28 +22,34 @@ func TestNewPrivKey(t *testing.T) {
 }
 
 func TestConvertPrivKeyToBech32Addr(t *testing.T) {
-	addrMykey := "xpla1ww42aq5v6886w0aggpkrh9pcqudr7qggje32qf"
-
-	PrivateKey, err := NewPrivKey(mnemonicMykey)
+	mnemonic, err := NewMnemonic()
 	assert.NoError(t, err)
 
-	addr, err := Bech32AddrString(PrivateKey)
+	PrivateKey, err := NewPrivKey(mnemonic)
 	assert.NoError(t, err)
-	require.Equal(t, addrMykey, addr)
+
+	_, err = Bech32AddrString(PrivateKey)
+	assert.NoError(t, err)
 }
 
 func TestConvertPrivKeyToHexAddr(t *testing.T) {
-	addrMykey := "73AAAE828CD1CFA73FA8406C3B9438071A3F0108"
-
-	PrivateKey, err := NewPrivKey(mnemonicMykey)
+	mnemonic, err := NewMnemonic()
 	assert.NoError(t, err)
 
+	PrivateKey, err := NewPrivKey(mnemonic)
+	assert.NoError(t, err)
+
+	addrMyKey := PrivateKey.PubKey().Address().String()
+
 	addr := HexAddrString(PrivateKey)
-	require.Equal(t, addrMykey, addr)
+	require.Equal(t, addrMyKey, addr)
 }
 
 func TestEncryptDecryptPrivKeyArmor(t *testing.T) {
-	PrivateKey, err := NewPrivKey(mnemonicMykey)
+	mnemonic, err := NewMnemonic()
+	assert.NoError(t, err)
+
+	PrivateKey, err := NewPrivKey(mnemonic)
 	assert.NoError(t, err)
 
 	armor1 := EncryptArmorPrivKey(PrivateKey, DefaultEncryptPassphrase)

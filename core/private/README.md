@@ -151,7 +151,7 @@ res, err = xplac.GenDIDSign(genDIDSignMsg).Query()
 
 ### (Query) Issue Verfiable Credential
 ```go
-// Get the VP
+// Issue VC
 // "DIDSignBase64" is result by querying "GenDIDSign"
 issueVCMsg := types.IssueVCMsg{
     // DIDKey: "didmoniker#key1"
@@ -164,7 +164,7 @@ res, err = xplac.IssueVC(issueVCMsg).Query()
 
 ### (Query) Get Verifiable Presentation
 ```go
-// Get the VP includes VC
+// Get the VP
 // "DIDSignBase64" is result by querying "GenDIDSign"
 getVPMsg := types.GetVPMsg{
     // DIDKey: "didmoniker#key1"

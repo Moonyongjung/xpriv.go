@@ -70,6 +70,7 @@ callSolContractMsg := types.CallSolContractMsg{
     // Args: nil, // input params if needed to call
     ABIJsonFilePath: "./abi.json",
     BytecodeJsonFilePath: "./bytecode.json",
+    FromByteAddress: "0xC9F0A2b814d389088a508E31fBa483E8C4372CC2"
 }
 
 res, err := xplac.CallSolidityContract(callSolContractMsg).Query()
@@ -116,7 +117,7 @@ res, err := xplac.GetBlockByHashOrHeight(getBlockByHashHeightMsg).Query()
 //   - "pending_code" : the contract code of the given account in the pending state (eth_getCode of the pending state)
 //   - "pending_transaction_count" : the total number of transactions in the pending state (eth_getBlockTransactionCountByNumber of the pending state)
 
-// so, the xpriv.go would not support some RPC APIs as "eth_getBalance", "eth_getTransactionCount", "eth_getStorageAt" and "eth_getCode" because the function is AccountInfo includes these.
+// so, the xpla.go would not support some RPC APIs as "eth_getBalance", "eth_getTransactionCount", "eth_getStorageAt" and "eth_getCode" because the function is AccountInfo includes these.
 
 accountInfoMsg := types.AccountInfoMsg{
     Account: "0xCa8582862B82867C4Bb9E926682dD75820dE6013",

@@ -108,7 +108,7 @@ func GetDIDDocByQueryClient(did, lcdUrl, grpcUrl string, grpcConn grpc.ClientCon
 		}
 
 	} else {
-		url := lcdUrl + "/xpla/did/v1beta1/dids/" + did
+		url := lcdUrl + "/xpla/did/v1beta1/get_did/" + did
 
 		out, err := CtxHttpClient("GET", url, nil, ctx)
 		if err != nil {

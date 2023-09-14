@@ -248,7 +248,10 @@ func parseRedelegateArgs(redelegateMsg types.RedelegateMsg, privKey key.PrivateK
 // Parsing - historical
 func parseHistoricalInfoArgs(historicalMsg types.HistoricalInfoMsg) (stakingtypes.QueryHistoricalInfoRequest, error) {
 	height := historicalMsg.Height
-	heightInt := util.FromStringToInt64(height)
+	heightInt, err := util.FromStringToInt64(height)
+	if err != nil {
+		return stakingtypes.QueryHistoricalInfoRequest{}, util.LogErr(errors.ErrParse, err)
+	}
 	if heightInt < 0 {
 		return stakingtypes.QueryHistoricalInfoRequest{}, util.LogErr(errors.ErrInvalidRequest, "height argument provided must be a non-negative-integer")
 	}

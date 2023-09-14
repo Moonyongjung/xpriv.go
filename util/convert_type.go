@@ -24,27 +24,45 @@ func FromStringToBigInt(v string) (*big.Int, error) {
 	return n, nil
 }
 
-func FromStringToUint64(value string) uint64 {
-	number, _ := strconv.ParseUint(value, 10, 64)
-	return number
+func FromStringToUint64(value string) (uint64, error) {
+	if value == "" {
+		return 0, nil
+	}
+	number, err := strconv.ParseUint(value, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return number, nil
 }
 
 func FromUint64ToString(value uint64) string {
 	return strconv.Itoa(int(value))
 }
 
-func FromStringToInt64(value string) int64 {
-	number, _ := strconv.ParseInt(value, 10, 64)
-	return number
+func FromStringToInt64(value string) (int64, error) {
+	if value == "" {
+		return 0, nil
+	}
+	number, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return number, nil
 }
 
 func FromInt64ToString(value int64) string {
 	return strconv.FormatInt(value, 10)
 }
 
-func FromStringToInt(value string) int {
-	number, _ := strconv.Atoi(value)
-	return number
+func FromStringToInt(value string) (int, error) {
+	if value == "" {
+		return 0, nil
+	}
+	number, err := strconv.Atoi(value)
+	if err != nil {
+		return 0, err
+	}
+	return number, nil
 }
 
 func FromIntToString(value int) string {
